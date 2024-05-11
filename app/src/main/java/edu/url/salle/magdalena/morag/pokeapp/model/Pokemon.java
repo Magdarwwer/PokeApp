@@ -6,12 +6,13 @@ public class Pokemon {
 
     private String name;
     private int frontImage;
+    private int backImage;
     private boolean isShiny;
 
-    public Pokemon(String name, int frontImage) {
+    public Pokemon(String name, int frontImage, int backImage) {
         this.name = name;
         this.frontImage = frontImage;
-        this.isShiny = generateShinyStatus();
+        this.backImage = backImage;
     }
 
     public String getName() {
@@ -25,6 +26,9 @@ public class Pokemon {
     public int getFrontImage() {
         return frontImage;
     }
+    public int getBackImage() {
+        return backImage;
+    }
 
     public void setFrontImage(int frontImage) {
         this.frontImage = frontImage;
@@ -34,9 +38,4 @@ public class Pokemon {
         return isShiny;
     }
 
-    private boolean generateShinyStatus() {
-        Random random = new Random();
-        int randomNumber = random.nextInt(500) + 1;
-        return randomNumber == 1;
-    }
 }

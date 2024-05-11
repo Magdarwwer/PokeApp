@@ -1,49 +1,47 @@
 package edu.url.salle.magdalena.morag.pokeapp.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.List;
+
+import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
+import edu.url.salle.magdalena.morag.pokeapp.model.PokemonDetailsResponse;
+import edu.url.salle.magdalena.morag.pokeapp.model.PokemonListResponse;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public class PokeApiService {
     private static final String BASE_URL = "https://pokeapi.co/api/v2/";
 
-    // Method to get the list of Pokémon
-    public JSONArray getPokemonList() throws IOException, JSONException {
-        URL url = new URL(BASE_URL + "pokemon");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
+    public interface PokeApi {
+        @GET("pokemon")
+        Call<PokemonListResponse> getAllPokemon();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
-        }
-        reader.close();
+        @GET("pokemon/{nameOrId}")
+        Call<PokemonDetailsResponse> getPokemonDetails(@Path("nameOrId") String nameOrId);
 
-        JSONObject jsonResponse = new JSONObject(response.toString());
-        return jsonResponse.getJSONArray("results");
+        @GET("pokemon")
+        Call<List<Pokemon>> getPokedex(@Path("nameOrId") String nameOrId);
     }
 
-    // Method to get details of a specific Pokémon by name or ID
-    public JSONObject getPokemonDetails(String nameOrId) throws IOException, JSONException {
-        URL url = new URL(BASE_URL + "pokemon/" + nameOrId);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
+    private static final Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
-        }
-        reader.close();
+    private static final PokeApi pokeApi = retrofit.create(PokeApi.class);
 
-        return new JSONObject(response.toString());
+    public static Call<PokemonListResponse> getAllPokemon() {
+        return pokeApi.getAllPokemon();
+    }
+
+    public static Call<PokemonDetailsResponse> getPokemonDetails(String nameOrId) {
+        return pokeApi.getPokemonDetails(nameOrId);
+    }
+
+    public static Call<List<Pokemon>> getPokedex(String nameOrId){
+        return pokeApi.getPokedex(nameOrId);
     }
 }
