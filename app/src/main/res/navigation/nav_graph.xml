@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_pokedex"
-        android:name="edu.url.salle.magdalena.morag.pokeapp.PokemonAdapter"
+        android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.PokemonFragment"
         android:label="Pokedex"
         tools:layout="@layout/fragment_pokedex" />
 
     <fragment
         android:id="@+id/navigation_trainer"
-        android:name="edu.url.salle.magdalena.morag.pokeapp.TrainerFragment"
+        android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.TrainerFragment"
         android:label="Trainer"
         tools:layout="@layout/fragment_trainer" />
 
     <fragment
         android:id="@+id/navigation_store"
-        android:name="edu.url.salle.magdalena.morag.pokeapp.StoreFragment"
+        android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.StoreFragment"
         android:label="Store"
         tools:layout="@layout/fragment_store" />
 

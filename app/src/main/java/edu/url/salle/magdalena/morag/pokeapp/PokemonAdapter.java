@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,19 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
         return pokemonList.size();
     }
 
+    public void addPokemonList(ArrayList<Pokemon> newPokemonList) {
+        int startPosition = pokemonList.size();
+        pokemonList.addAll(newPokemonList);
+        notifyItemRangeInserted(startPosition, newPokemonList.size());
+    }
+
+    public void filterList(ArrayList<Pokemon> filteredList) {
+        pokemonList = filteredList;
+        notifyDataSetChanged();
+    }
+
+
+
     public static class PokemonViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewName;
@@ -58,7 +73,10 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
 
         public void bind(Pokemon pokemon) {
             textViewName.setText(pokemon.getName());
-            imageViewFront.setImageResource(pokemon.getFrontImage());
+            Glide.with(itemView.getContext())
+                    .load(pokemon.getUrl())
+                    .into(imageViewFront);
         }
+
     }
 }
