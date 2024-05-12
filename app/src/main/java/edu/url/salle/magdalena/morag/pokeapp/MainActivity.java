@@ -1,18 +1,14 @@
 package edu.url.salle.magdalena.morag.pokeapp;
 
 import android.os.Bundle;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import edu.url.salle.magdalena.morag.pokeapp.fragment.PokedexFragment;
-import edu.url.salle.magdalena.morag.pokeapp.fragment.StoreFragment;
-import edu.url.salle.magdalena.morag.pokeapp.fragment.TrainerFragment;
-import android.view.MenuItem;
-import android.widget.Toast;
 
-import edu.url.salle.magdalena.morag.pokeapp.model.PokemonDetailsResponse;
-import edu.url.salle.magdalena.morag.pokeapp.model.PokemonListResponse;
+import edu.url.salle.magdalena.morag.pokeapp.fragment.PokemonDetailFragment;
+import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.service.PokeApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,72 +26,62 @@ public class MainActivity extends AppCompatActivity {
         pokeApiService = new PokeApiService();
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new PokedexFragment())
+                .replace(R.id.fragment_container, new PokemonDetailFragment())
                 .commit();
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-    }
-
-    private final BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
-                    int itemId = item.getItemId();
-
-                    if (itemId == R.id.navigation_pokedex) {
-                        selectedFragment = new PokedexFragment();
-                    } else if (itemId == R.id.navigation_trainer) {
-                        selectedFragment = new TrainerFragment();
-                    } else if (itemId == R.id.navigation_store) {
-                        selectedFragment = new StoreFragment();
-                    }
-
-                    if (selectedFragment != null) {
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, selectedFragment)
-                                .commit();
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            };
-    public void getAllPokemon() {
-        pokeApiService.getAllPokemon().enqueue(new Callback<PokemonListResponse>() {
-            @Override
-            public void onResponse(Call<PokemonListResponse> call, Response<PokemonListResponse> response) {
-                if (response.isSuccessful()) {
-                    PokemonListResponse pokemonListResponse = response.body();
-                } else {
-                    Toast.makeText(MainActivity.this, "Fejl: " + response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PokemonListResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Fejl: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void getPokemonDetails(String nameOrId) {
-        pokeApiService.getPokemonDetails(nameOrId).enqueue(new Callback<PokemonDetailsResponse>() {
+        pokeApiService.getPokemonDetails(nameOrId).enqueue(new Callback<Pokemon>() {
             @Override
-            public void onResponse(Call<PokemonDetailsResponse> call, Response<PokemonDetailsResponse> response) {
+            public void onResponse(@NonNull Call<Pokemon> call, @NonNull Response<Pokemon> response) {
                 if (response.isSuccessful()) {
-                    PokemonDetailsResponse pokemonDetailsResponse = response.body();
+                    Pokemon pokemon = response.body();
+                    if (pokemon != null) {
+                        displayPokemonDetails(pokemon);
+                    }
                 } else {
                     Toast.makeText(MainActivity.this, "Fejl: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<PokemonDetailsResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<Pokemon> call, @NonNull Throwable t) {
                 Toast.makeText(MainActivity.this, "Fejl: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void displayPokemonDetails(Pokemon pokemonDetailsResponse) {
+
+        Pokemon pokemon = getPokemon(pokemonDetailsResponse);
+
+        Fragment pokemonDetailFragment = PokemonDetailFragment.newInstance(pokemon);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, pokemonDetailFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @NonNull
+    private Pokemon getPokemon(Pokemon pokemonDetailsResponse) {
+        int frontImageUrl = Integer.parseInt(getImageUrl(pokemonDetailsResponse.getId(), true));
+        String pokeballImageUrl = getImageUrl(pokemonDetailsResponse.getId(), false);
+
+        Pokemon pokemon = new Pokemon(
+                pokemonDetailsResponse.getName(),
+                frontImageUrl,
+                pokeballImageUrl,
+                false
+        );
+        return pokemon;
+    }
+
+
+    private String getImageUrl(int id, boolean isFrontImage) {
+        String baseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+        String imageFileName = id + (isFrontImage ? ".png" : "_back.png");
+        return baseUrl + imageFileName;
     }
 
 }

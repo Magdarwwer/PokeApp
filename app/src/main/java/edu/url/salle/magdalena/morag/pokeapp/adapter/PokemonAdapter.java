@@ -115,4 +115,6 @@ public class PokemonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
         }
     }
+
+
 }

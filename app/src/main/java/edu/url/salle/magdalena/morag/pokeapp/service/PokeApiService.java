@@ -3,7 +3,6 @@ package edu.url.salle.magdalena.morag.pokeapp.service;
 import java.util.List;
 
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
-import edu.url.salle.magdalena.morag.pokeapp.model.PokemonDetailsResponse;
 import edu.url.salle.magdalena.morag.pokeapp.model.PokemonListResponse;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -20,10 +19,13 @@ public class PokeApiService {
         Call<PokemonListResponse> getAllPokemon();
 
         @GET("pokemon/{nameOrId}")
-        Call<PokemonDetailsResponse> getPokemonDetails(@Path("nameOrId") String nameOrId);
+        Call<Pokemon> getPokemonDetails(@Path("nameOrId") String nameOrId);
 
         @GET("pokemon")
-        Call<List<Pokemon>> getPokedex(@Path("nameOrId") String nameOrId);
+        Call<List<Pokemon>> getPokedex();
+
+        @GET("pokemon")
+        Call<PokemonListResponse> getListPokemon(@Query("limit") int limit , @Query("offset")int offset);
     }
 
     private static final Retrofit retrofit = new Retrofit.Builder()
@@ -37,11 +39,15 @@ public class PokeApiService {
         return pokeApi.getAllPokemon();
     }
 
-    public static Call<PokemonDetailsResponse> getPokemonDetails(String nameOrId) {
+    public static Call<Pokemon> getPokemonDetails(String nameOrId) {
         return pokeApi.getPokemonDetails(nameOrId);
     }
 
-    public static Call<List<Pokemon>> getPokedex(String nameOrId){
-        return pokeApi.getPokedex(nameOrId);
+    public static Call<List<Pokemon>> getPokedex(){
+        return pokeApi.getPokedex();
+    }
+
+    public static Call<PokemonListResponse> getListPokemon(int limit, int offset){
+        return pokeApi.getListPokemon(limit, offset);
     }
 }
