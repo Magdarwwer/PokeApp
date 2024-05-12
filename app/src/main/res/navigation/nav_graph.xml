@@ -3,26 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/navigation_pokedex">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="edu.url.salle.magdalena.morag.pokeapp.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/navigation_pokedex"
+        android:name="edu.url.salle.magdalena.morag.pokeapp.PokemonAdapter"
+        android:label="Pokedex"
+        tools:layout="@layout/fragment_pokedex" />
 
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-    </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="edu.url.salle.magdalena.morag.pokeapp.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/navigation_trainer"
+        android:name="edu.url.salle.magdalena.morag.pokeapp.TrainerFragment"
+        android:label="Trainer"
+        tools:layout="@layout/fragment_trainer" />
 
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+    <fragment
+        android:id="@+id/navigation_store"
+        android:name="edu.url.salle.magdalena.morag.pokeapp.StoreFragment"
+        android:label="Store"
+        tools:layout="@layout/fragment_store" />
+
 </navigation>

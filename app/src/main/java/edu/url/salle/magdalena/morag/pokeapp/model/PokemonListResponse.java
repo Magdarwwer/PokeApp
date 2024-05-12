@@ -1,11 +1,15 @@
 package edu.url.salle.magdalena.morag.pokeapp.model;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class PokemonListResponse {
-    private List<Pokemon> results;
+    private ArrayList<Pokemon> results;
 
-    public List<Pokemon> getResults() {
+    public ArrayList<Pokemon> getResults() {
         return results;
+    }
+
+    public void setResults(ArrayList<Pokemon> results) {
+        this.results = results;
     }
 }

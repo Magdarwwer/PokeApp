@@ -1,14 +1,16 @@
 package edu.url.salle.magdalena.morag.pokeapp;
 
 import android.os.Bundle;
-import android.widget.Toast;
+import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import edu.url.salle.magdalena.morag.pokeapp.fragment.PokemonDetailFragment;
+import java.util.ArrayList;
+
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
+import edu.url.salle.magdalena.morag.pokeapp.model.PokemonListResponse;
 import edu.url.salle.magdalena.morag.pokeapp.service.PokeApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,72 +18,39 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private PokeApiService pokeApiService;
+    private static final String TAG = "POKEDEX";
+    private RecyclerView recyclerView;
+    private PokemonAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pokeApiService = new PokeApiService();
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new PokemonDetailFragment())
-                .commit();
+        fetchDataFromAPI();
     }
 
-    public void getPokemonDetails(String nameOrId) {
-        pokeApiService.getPokemonDetails(nameOrId).enqueue(new Callback<Pokemon>() {
+    private void fetchDataFromAPI() {
+        PokeApiService.getPokedex(new Callback<PokemonListResponse>() {
             @Override
-            public void onResponse(@NonNull Call<Pokemon> call, @NonNull Response<Pokemon> response) {
+            public void onResponse(Call<PokemonListResponse> call, Response<PokemonListResponse> response) {
                 if (response.isSuccessful()) {
-                    Pokemon pokemon = response.body();
-                    if (pokemon != null) {
-                        displayPokemonDetails(pokemon);
-                    }
+                    PokemonListResponse pokemonListResponse = response.body();
+                    ArrayList<Pokemon> pokemonList = pokemonListResponse.getResults();
+                    adapter = new PokemonAdapter(pokemonList);
+                    recyclerView.setAdapter(adapter);
                 } else {
-                    Toast.makeText(MainActivity.this, "Fejl: " + response.message(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error: " + response.message());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Pokemon> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, "Fejl: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<PokemonListResponse> call, Throwable t) {
+                Log.e(TAG, "Error: " + t.getMessage());
             }
         });
     }
-
-    private void displayPokemonDetails(Pokemon pokemonDetailsResponse) {
-
-        Pokemon pokemon = getPokemon(pokemonDetailsResponse);
-
-        Fragment pokemonDetailFragment = PokemonDetailFragment.newInstance(pokemon);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, pokemonDetailFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @NonNull
-    private Pokemon getPokemon(Pokemon pokemonDetailsResponse) {
-        int frontImageUrl = Integer.parseInt(getImageUrl(pokemonDetailsResponse.getId(), true));
-        String pokeballImageUrl = getImageUrl(pokemonDetailsResponse.getId(), false);
-
-        Pokemon pokemon = new Pokemon(
-                pokemonDetailsResponse.getName(),
-                frontImageUrl,
-                pokeballImageUrl,
-                false
-        );
-        return pokemon;
-    }
-
-
-    private String getImageUrl(int id, boolean isFrontImage) {
-        String baseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
-        String imageFileName = id + (isFrontImage ? ".png" : "_back.png");
-        return baseUrl + imageFileName;
-    }
-
 }

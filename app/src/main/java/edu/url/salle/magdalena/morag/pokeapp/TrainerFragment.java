@@ -1,6 +1,5 @@
-package edu.url.salle.magdalena.morag.pokeapp.fragment;
+package edu.url.salle.magdalena.morag.pokeapp;
 
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +7,16 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
 
-public class StoreFragment extends Fragment {
+public class TrainerFragment extends Fragment  {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_store, container, false);
+        View view = inflater.inflate(R.layout.fragment_trainer, container, false);
 
         return view;
     }

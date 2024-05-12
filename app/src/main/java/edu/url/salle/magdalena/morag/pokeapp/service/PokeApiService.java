@@ -5,6 +5,7 @@ import java.util.List;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.PokemonListResponse;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
@@ -43,7 +44,7 @@ public class PokeApiService {
         return pokeApi.getPokemonDetails(nameOrId);
     }
 
-    public static Call<List<Pokemon>> getPokedex(){
+    public static Call<List<Pokemon>> getPokedex(Callback<PokemonListResponse> callback){
         return pokeApi.getPokedex();
     }
 
