@@ -6,7 +6,12 @@ public class Pokemon {
         private String name;
         private String url;
 
-        public String getName() {
+    public Pokemon(String name, String pokemonUrl) {
+        this.name = name;
+        this.url = pokemonUrl;
+    }
+
+    public String getName() {
             return name;
         }
 
@@ -23,8 +28,8 @@ public class Pokemon {
         }
 
         public int getNumber() {
-            String[] urlPartes = url.split("/");
-            return Integer.parseInt(urlPartes[urlPartes.length - 1]);
+            String[] urlNumber = url.split("/");
+            return Integer.parseInt(urlNumber[urlNumber.length - 1]);
         }
 
         public void setNumber(int number) {

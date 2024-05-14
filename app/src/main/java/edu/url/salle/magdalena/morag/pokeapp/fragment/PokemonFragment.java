@@ -16,31 +16,33 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import cz.msebera.android.httpclient.Header;
 import edu.url.salle.magdalena.morag.pokeapp.PokemonAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
-import edu.url.salle.magdalena.morag.pokeapp.model.PokemonListResponse;
-import edu.url.salle.magdalena.morag.pokeapp.service.PokeApiService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PokemonFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private PokemonAdapter adapter;
     private ArrayList<Pokemon> pokemonList;
-    private ArrayList<String> pokemonNames;
 
     private static final String BASE_URL = "https://pokeapi.co/api/v2/";
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_pokedex, container, false);
-        recyclerView = root.findViewById(R.id.recyclerViewPokemons);
+        recyclerView = root.findViewById(R.id.recyclerView);
         pokemonList = new ArrayList<>();
-        adapter = new PokemonAdapter(pokemonList);
+        adapter = new PokemonAdapter(requireContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -78,34 +80,44 @@ public class PokemonFragment extends Fragment {
         adapter.filterList(filteredPokemonList);
     }
 
+    private void fetchData() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        fetchPokemonRecursive(client, BASE_URL + "pokemon");
+    }
 
-
-    private RecyclerView fetchData() {
-        PokeApiService.getPokeApi(BASE_URL).getAllPokemon().enqueue(new Callback<PokemonListResponse>() {
+    private void fetchPokemonRecursive(AsyncHttpClient client, String url) {
+        client.get(url, new JsonHttpResponseHandler() {
             @Override
-            public void onResponse(@NonNull Call<PokemonListResponse> call, @NonNull Response<PokemonListResponse> response) {
-                if (response.isSuccessful()) {
-                    PokemonListResponse pokemonListResponse = response.body();
-                    if (pokemonListResponse != null) {
-                        ArrayList<Pokemon> newPokemonList = pokemonListResponse.getResults();
-                        for (Pokemon pokemon : newPokemonList) {
-                            String pokemonName = pokemon.getName();
-                            Log.d("name", pokemonName);
-                            pokemonNames.add(pokemonName);
-                        }
-                        pokemonList.addAll(newPokemonList);
-                        adapter.notifyDataSetChanged();
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray results = response.getJSONArray("results");
+                    for (int i = 0; i < results.length(); i++) {
+                        JSONObject pokemonJson = results.getJSONObject(i);
+                        String pokemonName = pokemonJson.getString("name");
+                        String pokemonUrl = pokemonJson.getString("url");
+                        Pokemon pokemon = new Pokemon(pokemonName, pokemonUrl);
+                        pokemonList.add(pokemon);
                     }
-                } else {
-                    Toast.makeText(requireContext(), "Failed to fetch Pokémon data", Toast.LENGTH_SHORT).show();
+                    adapter.notifyDataSetChanged();
+
+                    // Check if there are more Pokémon to fetch
+                    if (!response.isNull("next")) {
+                        String nextUrl = response.getString("next");
+                        fetchPokemonRecursive(client, nextUrl);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<PokemonListResponse> call, @NonNull Throwable t) {
-                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(requireContext(), "Failed to fetch Pokémon data", Toast.LENGTH_SHORT).show();
             }
         });
-        return recyclerView;
     }
+
+
+
+
 }

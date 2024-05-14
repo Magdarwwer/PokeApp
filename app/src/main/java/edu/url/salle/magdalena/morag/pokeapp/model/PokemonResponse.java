@@ -2,7 +2,7 @@ package edu.url.salle.magdalena.morag.pokeapp.model;
 
 import java.util.ArrayList;
 
-public class PokemonListResponse {
+public class PokemonResponse {
     private ArrayList<Pokemon> results;
 
     public ArrayList<Pokemon> getResults() {
