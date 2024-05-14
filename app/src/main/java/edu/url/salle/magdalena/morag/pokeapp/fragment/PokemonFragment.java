@@ -82,7 +82,7 @@ public class PokemonFragment extends Fragment {
 
     private void fetchData() {
         AsyncHttpClient client = new AsyncHttpClient();
-        fetchPokemonRecursive(client, BASE_URL + "pokemon");
+        fetchPokemonRecursive(client, BASE_URL + "pokemon?limit=15&offset=0");
     }
 
     private void fetchPokemonRecursive(AsyncHttpClient client, String url) {
