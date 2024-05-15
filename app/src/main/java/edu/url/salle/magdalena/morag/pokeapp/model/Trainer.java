@@ -7,20 +7,13 @@ public class Trainer {
     private String name;
     private int money;
     private List<Pokemon> capturedPokemons;
-    private List<String> capturedPokemonsTrainer;
     private List<String> items;
 
-    /*public Trainer(String name, int money, List<String> items, List<Pokemon> capturedPokemons) {
+    public Trainer(String name, int money, List<String> items, List<Pokemon> capturedPokemons) {
         this.name = name;
         this.money = money;
         this.items = items;
         this.capturedPokemons = capturedPokemons;
-    }*/
-    public Trainer(String name, int money, List<String> items, List<String> capturedPokemonsTrainer) {
-        this.name = name;
-        this.money = money;
-        this.items = items;
-        this.capturedPokemonsTrainer = capturedPokemonsTrainer;
     }
 
 
