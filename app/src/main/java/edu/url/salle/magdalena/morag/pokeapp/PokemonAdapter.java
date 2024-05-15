@@ -1,26 +1,19 @@
 package edu.url.salle.magdalena.morag.pokeapp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 
@@ -28,20 +21,42 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
     private ArrayList<Pokemon> dataset;
     private Context context;
+    private OnPokemonClickListener listener;
 
     public PokemonAdapter(Context context) {
         this.context = context;
         dataset = new ArrayList<>();
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon, parent, false);
-        return new ViewHolder(view);
+    public interface OnPokemonClickListener {
+        void onPokemonClick(Pokemon pokemon);
     }
 
+    public void setOnPokemonClickListener(OnPokemonClickListener listener) {
+        this.listener = listener;
+    }
+
+    @NonNull
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = viewHolder.getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onPokemonClick(dataset.get(position));
+                }
+            }
+        });
+        return viewHolder;
+    }
+
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Pokemon p = dataset.get(position);
         holder.nameTextView.setText(p.getName());
 
@@ -50,6 +65,16 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.pictureImageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onPokemonClick(p);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -68,7 +93,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView pictureImageView;
         private TextView nameTextView;
@@ -78,6 +103,16 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
             pictureImageView = itemView.findViewById(R.id.pictureImageView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION && listener != null) {
+                listener.onPokemonClick(dataset.get(position));
+            }
         }
     }
 }
