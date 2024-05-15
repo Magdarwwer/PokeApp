@@ -5,12 +5,18 @@ public class Pokemon {
         private int number;
         private String name;
         private String url;
+        private String pokeballImage;
 
     public Pokemon(String name, String pokemonUrl) {
         this.name = name;
         this.url = pokemonUrl;
     }
 
+    public Pokemon(String name, String frontImage, String pokeballImage) {
+        this.name = name;
+        this.url = frontImage;
+        this.pokeballImage = pokeballImage;
+    }
     public String getName() {
             return name;
         }

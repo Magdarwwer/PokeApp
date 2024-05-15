@@ -28,6 +28,10 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         dataset = new ArrayList<>();
     }
 
+    public PokemonAdapter() {
+        dataset = new ArrayList<>();
+    }
+
     public interface OnPokemonClickListener {
         void onPokemonClick(Pokemon pokemon);
     }
