@@ -12,22 +12,22 @@
     tools:layout="@layout/fragment_pokedex">
     <action
         android:id="@+id/fragment_pokemon_detail"
-        tools:layout="@layout/fragment_pokemon_detail"
         app:destination="@id/pokemonDetailFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/pokemonDetailFragment"
         android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.PokemonFragment"
-        android:label="Pokemon Detail"
+        android:label="pokemonDetails"
         tools:layout="@layout/fragment_pokemon_detail" />
-
 
     <fragment
         android:id="@+id/navigation_trainer"
         android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.TrainerFragment"
         android:label="Trainer"
-        tools:layout="@layout/fragment_trainer" />
+        tools:layout="@layout/fragment_trainer"/>
+
+
 
     <fragment
         android:id="@+id/navigation_store"

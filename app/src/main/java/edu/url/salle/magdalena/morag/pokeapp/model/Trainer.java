@@ -1,18 +1,26 @@
 package edu.url.salle.magdalena.morag.pokeapp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Trainer {
     private String name;
     private int money;
     private List<Pokemon> capturedPokemons;
-    private List<Item> items;
+    private List<String> capturedPokemonsTrainer;
+    private List<String> items;
 
-    public Trainer(String name, int money, List<Item> items, List<Pokemon> capturedPokemons) {
+    /*public Trainer(String name, int money, List<String> items, List<Pokemon> capturedPokemons) {
         this.name = name;
         this.money = money;
         this.items = items;
         this.capturedPokemons = capturedPokemons;
+    }*/
+    public Trainer(String name, int money, List<String> items, List<String> capturedPokemonsTrainer) {
+        this.name = name;
+        this.money = money;
+        this.items = items;
+        this.capturedPokemonsTrainer = capturedPokemonsTrainer;
     }
 
 
@@ -26,18 +34,26 @@ public class Trainer {
 
     }
 
-    public void addItem(Item item) {
+    public void addItem(String item) {
 
     }
 
-    public void capturePokemon(Pokemon pokemon) {
-        if (capturedPokemons.size() < 6) {
-            capturedPokemons.add(pokemon);
-
-        } else {
+    public void capturePokemonFromAPI(Pokemon pokemon) {
+            if (capturedPokemons.size() < 6) {
+                capturedPokemons.add(pokemon);
+            } else {
 
         }
     }
+    public String capturePokemon(String pokemonName) {
+        if (capturedPokemons.size() < 6) {
+            capturedPokemons.add(new Pokemon(pokemonName));
+        } else {
+            System.out.println("Trainer can't capture more than 6 pokemons.");
+        }
+        return pokemonName;
+    }
+
 
     public void releasePokemon(Pokemon pokemon) {
         if (capturedPokemons.size() > 1) {
@@ -68,15 +84,18 @@ public class Trainer {
         return capturedPokemons;
     }
 
+
+
     public void setCapturedPokemons(List<Pokemon> capturedPokemons) {
         this.capturedPokemons = capturedPokemons;
     }
 
-    public List<Item> getItems() {
+    public List<String> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+
+    public void setItems(List<String> items) {
         this.items = items;
     }
 }

@@ -6,12 +6,13 @@
     android:layout_height="match_parent">
 
     <!-- Searchbar -->
+
     <EditText
         android:id="@+id/editTextSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="16dp"
         android:hint="Search Pokémon"
         android:padding="16dp"

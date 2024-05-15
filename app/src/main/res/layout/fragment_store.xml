@@ -7,52 +7,93 @@
     tools:context="edu.url.salle.magdalena.morag.pokeapp.fragment.StoreFragment">
 
     <TextView
-        android:id="@+id/textViewPokeballPrice"
+        android:id="@+id/textViewStoreTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pokeball Price" />
+        android:text="POKEMON STORE"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
 
-
-    <Button
-        android:id="@+id/buttonBuyPokeball"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layoutPokeball"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Buy Pokeball" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textViewSuperballPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Superball Price" />
+        <TextView
+            android:id="@+id/textViewPokeballPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pokeball Price" />
 
-    <Button
-        android:id="@+id/buttonBuySuperball"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Buy Superball" />
+        <Button
+            android:id="@+id/buttonBuyPokeball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buy Pokeball" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewUltraballPrice"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layoutSuperball"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ultraball Price" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/buttonBuyUltraball"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Buy Ultraball" />
+        <TextView
+            android:id="@+id/textViewSuperballPrice"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Superball Price" />
 
-    <TextView
-        android:id="@+id/textViewMasterballPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Masterball Price" />
+        <Button
+            android:id="@+id/buttonBuySuperball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buy Superball" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonBuyMasterball"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layoutUltraball"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Buy Masterball" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewUltraballPrice"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Ultraball Price" />
+
+        <Button
+            android:id="@+id/buttonBuyUltraball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buy Ultraball" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutMasterball"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewMasterballPrice"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Masterball Price" />
+
+        <Button
+            android:id="@+id/buttonBuyMasterball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buy Masterball" />
+    </LinearLayout>
 
 </LinearLayout>

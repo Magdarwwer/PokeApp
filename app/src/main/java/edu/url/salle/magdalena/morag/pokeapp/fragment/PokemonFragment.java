@@ -27,7 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
-import edu.url.salle.magdalena.morag.pokeapp.PokemonAdapter;
+import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.PokemonDetails;
@@ -37,6 +37,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
     private RecyclerView recyclerView;
     private PokemonAdapter adapter;
     private ArrayList<Pokemon> pokemonList;
+    private Pokemon[] first15PokemonList = new Pokemon[15];
 
     private static final String BASE_URL = "https://pokeapi.co/api/v2/";
 
@@ -48,6 +49,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         adapter.setOnPokemonClickListener(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
         fetchData();
 
         EditText editTextSearch = root.findViewById(R.id.editTextSearch);
@@ -92,11 +94,14 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                     JSONArray results = response.getJSONArray("results");
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject pokemonJson = results.getJSONObject(i);
+                        int pokemonID = i + 1;
                         String pokemonName = pokemonJson.getString("name");
                         String pokemonUrl = pokemonJson.getString("url");
                         Pokemon pokemon = new Pokemon(pokemonName, pokemonUrl);
+                        pokemon.setID(pokemonID);
                         pokemonList.add(pokemon);
                     }
+                    copyFirst15Pokemon();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -110,17 +115,31 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         });
     }
 
+
+    private void copyFirst15Pokemon() {
+        ArrayList<Pokemon> first15PokemonList = new ArrayList<>();
+        if (pokemonList.size() >= 15) {
+            for (int i = 0; i < 15; i++) {
+                first15PokemonList.add(pokemonList.get(i));
+            }
+        } else {
+            Toast.makeText(requireContext(), "Failed to copy Pokemon list", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     private void fetchPokemonDetails(Pokemon pokemon) {
         AsyncHttpClient client = new AsyncHttpClient();
-        String url = BASE_URL + "pokemon/" + (pokemonList.indexOf(pokemon) + 1);
+        String url = BASE_URL + "pokemon/" + pokemon.getId();
         client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     // Extracting details from the response JSON object
                     String name = response.getString("name");
-                    String front_default = response.getJSONObject("sprites").getString("front_default");
-                    String back_default = response.getJSONObject("sprites").getString("back_default");
+                    JSONObject sprites = response.getJSONObject("sprites");
+                    String front_default = sprites.getString("front_default");
+                    String back_default = sprites.getString("back_default");
                     int height = response.getInt("height");
                     int weight = response.getInt("weight");
                     String description = ""; // This information is not available directly in the response JSON
@@ -166,8 +185,10 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                             statsList
                     );
 
-                    // Navigating to a new fragment/activity to display the Pokémon details
-                    displayPokemonDetails(pokemonDetails);
+                    // Navigating to the Pokémon details fragment
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("pokemonDetails", pokemonDetails);
+                    Navigation.findNavController(requireView()).navigate(R.id.fragment_pokemon_detail, bundle);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -179,6 +200,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
             }
         });
     }
+
 
     private void displayPokemonDetails(PokemonDetails pokemonDetails) {
         Bundle bundle = new Bundle();
@@ -192,5 +214,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         Log.d("PokemonFragment", "Clicked on Pokemon: " + pokemon.getName());
         fetchPokemonDetails(pokemon);
     }
+
+
 
 }
