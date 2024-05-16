@@ -31,10 +31,11 @@ public class TrainerFragment extends Fragment {
     private TextView textViewCapturedPokemons;
     private List<Trainer> trainers;
     private Trainer currentTrainer;
+    private View root;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_trainer, container, false);
+        root = inflater.inflate(R.layout.fragment_trainer, container, false);
         textViewTrainerName = root.findViewById(R.id.textViewTrainerName);
         textViewTrainerMoney = root.findViewById(R.id.textViewTrainerMoney);
         textViewItems = root.findViewById(R.id.textViewItems);
@@ -84,6 +85,7 @@ public class TrainerFragment extends Fragment {
             if (trainer.getName().equalsIgnoreCase(name)) {
                 currentTrainer = trainer;
                 updateTrainerInfo(currentTrainer);
+                showButtons();
                 return;
             }
         }
@@ -167,9 +169,68 @@ public class TrainerFragment extends Fragment {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    // Method to handle adding a Pokemon to the Trainer
     private void onAddPokemonButtonClick(Trainer trainer, Pokemon pokemon) {
-        // Call this method when you want to add a Pokemon to a Trainer
         addPokemonToTrainer(trainer, pokemon);
     }
+
+    private void showButtons() {
+        ViewGroup layout = root.findViewById(R.id.buttonShowOrNotShow);
+        layout.removeAllViews();
+
+        if (currentTrainer == null) {
+            return;
+        }
+
+        // If there are less than 6 pokemons, show "Add Pokemon" button
+        if (currentTrainer.getCapturedPokemons().size() < 6) {
+            Button addButton = new Button(requireContext());
+            addButton.setText("Add Pokemon");
+            addButton.setOnClickListener(v -> showAddPokemonDialog(currentTrainer));
+            layout.addView(addButton);
+        } else {
+            // If there are 6 or more pokemons, show "Remove Pokemon" button
+            Button removeButton = new Button(requireContext());
+            removeButton.setText("Remove Pokemon");
+            removeButton.setOnClickListener(v -> showRemovePokemonDialog(currentTrainer));
+            layout.addView(removeButton);
+        }
+    }
+
+    private void showAddPokemonDialog(Trainer trainer) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Add Pokemon");
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+
+            showToastMessage("Add Pokemon logic to be implemented");
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void showRemovePokemonDialog(Trainer trainer) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Remove Pokemon");
+
+        List<Pokemon> capturedPokemons = trainer.getCapturedPokemons();
+
+        String[] pokemonNames = new String[capturedPokemons.size()];
+        for (int i = 0; i < capturedPokemons.size(); i++) {
+            pokemonNames[i] = capturedPokemons.get(i).getName();
+        }
+
+        builder.setItems(pokemonNames, (dialog, which) -> {
+            Pokemon removedPokemon = capturedPokemons.remove(which);
+            updateTrainerInfo(trainer);
+            showToastMessage("Removed " + removedPokemon.getName() + " from " + trainer.getName());
+            showButtons();
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+
 }
