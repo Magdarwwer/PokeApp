@@ -1,5 +1,6 @@
 package edu.url.salle.magdalena.morag.pokeapp.fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,19 +25,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.R;
+
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
-import edu.url.salle.magdalena.morag.pokeapp.model.PokemonDetails;
+import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
 public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemonClickListener {
 
     private RecyclerView recyclerView;
     private PokemonAdapter adapter;
     private ArrayList<Pokemon> pokemonList;
-    private Pokemon[] first15PokemonList = new Pokemon[15];
 
     private static final String BASE_URL = "https://pokeapi.co/api/v2/";
 
@@ -84,7 +85,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         adapter.filterList(filteredPokemonList);
     }
 
-    private void fetchData() {
+    public void fetchData() {
         AsyncHttpClient client = new AsyncHttpClient();
         String url = BASE_URL + "pokemon?limit=15&offset=0";
         client.get(url, new JsonHttpResponseHandler() {
@@ -98,10 +99,9 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         String pokemonName = pokemonJson.getString("name");
                         String pokemonUrl = pokemonJson.getString("url");
                         Pokemon pokemon = new Pokemon(pokemonName, pokemonUrl);
-                        pokemon.setID(pokemonID);
+                        pokemon.setId(pokemonID);
                         pokemonList.add(pokemon);
                     }
-                    copyFirst15Pokemon();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -115,45 +115,73 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         });
     }
 
-
-    private void copyFirst15Pokemon() {
-        ArrayList<Pokemon> first15PokemonList = new ArrayList<>();
-        if (pokemonList.size() >= 15) {
-            for (int i = 0; i < 15; i++) {
-                first15PokemonList.add(pokemonList.get(i));
+    @Override
+    public void onPokemonClick(Pokemon pokemon) {
+        Log.d("PokemonFragment", "Clicked on Pokemon: " + pokemon.getName());
+        // Fetch Pokémon details when clicked
+        fetchPokemonDetails(pokemon, new PokemonDetailsCallback() {
+            @Override
+            public void onPokemonDetailsFetched(Pokemon pokemon) {
+                displayPokemonDetails(pokemon);
+                // Prompt user to add the clicked Pokemon to a Trainer
+                showAddPokemonDialog(pokemon);
             }
-        } else {
-            Toast.makeText(requireContext(), "Failed to copy Pokemon list", Toast.LENGTH_SHORT).show();
-        }
+        });
     }
 
+    private void showAddPokemonDialog(Pokemon pokemon) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Add Pokemon to Trainer");
+        builder.setMessage("Do you want to add " + pokemon.getName() + " to a Trainer?");
 
-    private void fetchPokemonDetails(Pokemon pokemon) {
+        // Set up the buttons
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            // Implement logic to choose a Trainer to add the Pokemon to
+            // For demonstration, let's assume we have a list of trainers
+            // and user can select one from them
+            chooseTrainerToAddPokemon(pokemon);
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void chooseTrainerToAddPokemon(Pokemon pokemon) {
+        TrainerFragment trainerFragment = new TrainerFragment();
+        List<Trainer> trainers = trainerFragment.getTrainers();
+        String[] trainerNames = new String[trainers.size()];
+        for (int i = 0; i < trainers.size(); i++) {
+            trainerNames[i] = trainers.get(i).getName();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Choose Trainer");
+        builder.setItems(trainerNames, (dialog, which) -> {
+            Trainer selectedTrainer = trainers.get(which);
+
+            trainerFragment.addPokemonToTrainer(selectedTrainer, pokemon);
+        });
+
+        builder.show();
+    }
+
+    public void fetchPokemonDetails(Pokemon pokemon, PokemonDetailsCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
+
         String url = BASE_URL + "pokemon/" + pokemon.getId();
+
         client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    // Extracting details from the response JSON object
                     String name = response.getString("name");
+                    int height = response.getInt("height");
+                    int weight = response.getInt("weight");
+
                     JSONObject sprites = response.getJSONObject("sprites");
                     String front_default = sprites.getString("front_default");
                     String back_default = sprites.getString("back_default");
-                    int height = response.getInt("height");
-                    int weight = response.getInt("weight");
-                    String description = ""; // This information is not available directly in the response JSON
 
-                    // Processing abilities
-                    JSONArray abilitiesArray = response.getJSONArray("abilities");
-                    ArrayList<String> abilitiesList = new ArrayList<>();
-                    for (int i = 0; i < abilitiesArray.length(); i++) {
-                        JSONObject abilityObject = abilitiesArray.getJSONObject(i);
-                        String abilityName = abilityObject.getJSONObject("ability").getString("name");
-                        abilitiesList.add(abilityName);
-                    }
-
-                    // Processing types
                     JSONArray typesArray = response.getJSONArray("types");
                     ArrayList<String> typesList = new ArrayList<>();
                     for (int i = 0; i < typesArray.length(); i++) {
@@ -162,7 +190,14 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         typesList.add(typeName);
                     }
 
-                    // Processing stats
+                    JSONArray abilitiesArray = response.getJSONArray("abilities");
+                    ArrayList<String> abilitiesList = new ArrayList<>();
+                    for (int i = 0; i < abilitiesArray.length(); i++) {
+                        JSONObject abilityObject = abilitiesArray.getJSONObject(i);
+                        String abilityName = abilityObject.getJSONObject("ability").getString("name");
+                        abilitiesList.add(abilityName);
+                    }
+
                     JSONArray statsArray = response.getJSONArray("stats");
                     ArrayList<String> statsList = new ArrayList<>();
                     for (int i = 0; i < statsArray.length(); i++) {
@@ -172,23 +207,19 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         statsList.add(statName + ": " + baseStat);
                     }
 
-                    // Creating a new Pokémon object with the extracted details
-                    PokemonDetails pokemonDetails = new PokemonDetails(
+                    Pokemon pokemon = new Pokemon(
                             name,
                             height,
                             weight,
                             front_default,
                             back_default,
                             typesList,
-                            description,
+                            "", // Not coming from the API
                             abilitiesList,
                             statsList
                     );
 
-                    // Navigating to the Pokémon details fragment
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("pokemonDetails", pokemonDetails);
-                    Navigation.findNavController(requireView()).navigate(R.id.fragment_pokemon_detail, bundle);
+                    callback.onPokemonDetailsFetched(pokemon);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -201,18 +232,16 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         });
     }
 
-
-    private void displayPokemonDetails(PokemonDetails pokemonDetails) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("pokemonDetails", pokemonDetails);
-
-        Navigation.findNavController(requireView()).navigate(R.id.fragment_pokemon_detail, bundle);
+    // Inner interface for PokemonDetailsCallback
+    public interface PokemonDetailsCallback {
+        void onPokemonDetailsFetched(Pokemon pokemon);
     }
 
-    @Override
-    public void onPokemonClick(Pokemon pokemon) {
-        Log.d("PokemonFragment", "Clicked on Pokemon: " + pokemon.getName());
-        fetchPokemonDetails(pokemon);
+    // Method to display Pokemon details (for demonstration)
+    private void displayPokemonDetails(Pokemon pokemon) {
+        // Implement logic to display Pokemon details in your app UI
+        // This method is just for demonstration
+        Log.d("PokemonDetails", pokemon.toString());
     }
 
 

@@ -3,6 +3,7 @@ package edu.url.salle.magdalena.morag.pokeapp.fragment;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,14 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
+
+import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
+import edu.url.salle.magdalena.morag.pokeapp.service.PokeApiService;
 
 public class TrainerFragment extends Fragment {
 
@@ -36,11 +41,7 @@ public class TrainerFragment extends Fragment {
         textViewItems = root.findViewById(R.id.textViewItems);
         textViewCapturedPokemons = root.findViewById(R.id.textViewCapturedPokemons);
 
-        // Hardcoded trainers
-        trainers = new ArrayList<>();
-        trainers.add(new Trainer("Ash", 1000, new ArrayList<>(), new ArrayList<>()));
-        trainers.add(new Trainer("Misty", 1500, new ArrayList<>(), new ArrayList<>()));
-        trainers.add(new Trainer("Brock", 1200, new ArrayList<>(), new ArrayList<>()));
+        getTrainers();
 
         Button openDialogButton = root.findViewById(R.id.buttonOpenDialog);
         openDialogButton.setOnClickListener(v -> showChangeNameDialog());
@@ -62,10 +63,42 @@ public class TrainerFragment extends Fragment {
         Toast.makeText(requireContext(), "Trainer not found", Toast.LENGTH_SHORT).show();
     }
 
+    public List<Trainer> getTrainers() {
+        List<Trainer> trainers = new ArrayList<>();
+        trainers.add(new Trainer("Ash", 1000, new ArrayList<>(), new ArrayList<>()));
+        trainers.add(new Trainer("Misty", 1500, new ArrayList<>(), new ArrayList<>()));
+        trainers.add(new Trainer("Brock", 1200, new ArrayList<>(), new ArrayList<>()));
+
+        List<List<String>> items = getItems();
+        for (int i = 0; i < trainers.size(); i++) {
+            Trainer trainer = trainers.get(i);
+            List<String> trainerItems = items.get(i);
+            trainer.getItems().addAll(trainerItems);
+        }
+
+        return trainers;
+    }
+
+    public List<List<String>> getItems() {
+        List<List<String>> allItems = new ArrayList<>();
+        List<String> ashItems = Arrays.asList("Potion", "Revive", "Great Ball");
+        List<String> mistyItems = Arrays.asList("Potion", "Super Potion", "Ultra Ball");
+        List<String> brockItems = Arrays.asList("Potion", "Max Potion", "Master Ball");
+
+        allItems.add(ashItems);
+        allItems.add(mistyItems);
+        allItems.add(brockItems);
+
+        return allItems;
+    }
+
+
     // Method to update Trainer's information
     private void updateTrainerInfo(Trainer trainer) {
         textViewTrainerName.setText(trainer.getName());
         textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
+        textViewItems.setText(TextUtils.join(", ", trainer.getItems()));
+        //textViewCapturedPokemons.setText(TextUtils.join(", ", trainer.getCapturedPokemons()));
     }
 
     // Method to update Trainer's name
@@ -114,5 +147,31 @@ public class TrainerFragment extends Fragment {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    // Method to fetch Pokemon details and add it to the Trainer
+    public void addPokemonToTrainer(Trainer trainer, Pokemon pokemon) {
+        PokemonFragment pokemonFragment = new PokemonFragment();
+        pokemonFragment.fetchPokemonDetails(pokemon, new PokemonFragment.PokemonDetailsCallback() {
+            @Override
+            public void onPokemonDetailsFetched(Pokemon pokemon) {
+                // Update the trainer object with the fetched PokemonDetails
+                if (trainer != null && pokemon != null) {
+                    trainer.addPokemon(pokemon);
+                    updateTrainerInfo(trainer);
+                    showToastMessage("Added " + pokemon.getName() + " to " + trainer.getName());
+                }
+            }
+        });
+    }
+
+    private void showToastMessage(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    // Method to handle adding a Pokemon to the Trainer
+    private void onAddPokemonButtonClick(Trainer trainer, Pokemon pokemon) {
+        // Call this method when you want to add a Pokemon to a Trainer
+        addPokemonToTrainer(trainer, pokemon);
     }
 }

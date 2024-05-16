@@ -1,6 +1,5 @@
 package edu.url.salle.magdalena.morag.pokeapp.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Trainer {
@@ -15,7 +14,9 @@ public class Trainer {
         this.items = items;
         this.capturedPokemons = capturedPokemons;
     }
-
+    public void addPokemon(Pokemon pokemon) {
+        capturedPokemons.add(pokemon);
+    }
 
     public void updateName(String newName) {
         this.name = newName;
@@ -38,13 +39,13 @@ public class Trainer {
 
         }
     }
-    public String capturePokemon(String pokemonName) {
+    public String capturePokemon(Pokemon pokemon) {
         if (capturedPokemons.size() < 6) {
-            capturedPokemons.add(new Pokemon(pokemonName));
+            capturedPokemons.add(pokemon);
         } else {
             System.out.println("Trainer can't capture more than 6 pokemons.");
         }
-        return pokemonName;
+        return pokemon.getName();
     }
 
 

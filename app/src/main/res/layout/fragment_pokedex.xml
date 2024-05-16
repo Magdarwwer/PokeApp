@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
     <!-- Searchbar -->
-
     <EditText
         android:id="@+id/editTextSearch"
         android:layout_width="match_parent"
@@ -23,8 +22,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="413dp"
-        android:layout_height="559dp"
+        android:layout_width="410dp"
+        android:layout_height="643dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/pokemonDetailFragment"
         android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.PokemonFragment"
-        android:label="pokemonDetails"
+        android:label="pokemon"
         tools:layout="@layout/fragment_pokemon_detail" />
 
     <fragment
