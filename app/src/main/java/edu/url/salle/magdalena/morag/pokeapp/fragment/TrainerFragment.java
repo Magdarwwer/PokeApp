@@ -92,8 +92,6 @@ public class TrainerFragment extends Fragment {
         Toast.makeText(requireContext(), "Trainer not found", Toast.LENGTH_SHORT).show();
     }
 
-
-
     // Method to update Trainer's information
     private void updateTrainerInfo(Trainer trainer) {
         textViewTrainerName.setText(trainer.getName());
