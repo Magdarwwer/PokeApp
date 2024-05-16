@@ -22,7 +22,6 @@ import edu.url.salle.magdalena.morag.pokeapp.R;
 
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
-import edu.url.salle.magdalena.morag.pokeapp.service.PokeApiService;
 
 public class TrainerFragment extends Fragment {
 
@@ -41,7 +40,29 @@ public class TrainerFragment extends Fragment {
         textViewItems = root.findViewById(R.id.textViewItems);
         textViewCapturedPokemons = root.findViewById(R.id.textViewCapturedPokemons);
 
-        getTrainers();
+        List<String> ashItems = Arrays.asList("Potion", "Revive", "Great Ball");
+        List<String> mistyItems = Arrays.asList("Potion", "Super Potion", "Ultra Ball");
+        List<String> brockItems = Arrays.asList("Potion", "Max Potion", "Master Ball");
+
+        trainers = new ArrayList<>();
+        Trainer ash = new Trainer("Ash", 1000, new ArrayList<>(), new ArrayList<>());
+        Trainer misty = new Trainer("Misty", 1500, new ArrayList<>(), new ArrayList<>());
+        Trainer brock = new Trainer("Brock", 1200, new ArrayList<>(), new ArrayList<>());
+
+        trainers.add(ash);
+        trainers.add(misty);
+        trainers.add(brock);
+
+        List<List<String>> items = new ArrayList<>();
+        items.add(ashItems);
+        items.add(mistyItems);
+        items.add(brockItems);
+
+        for (int i = 0; i < trainers.size(); i++) {
+            Trainer trainer = trainers.get(i);
+            List<String> trainerItems = items.get(i);
+            trainer.getItems().addAll(trainerItems);
+        }
 
         Button openDialogButton = root.findViewById(R.id.buttonOpenDialog);
         openDialogButton.setOnClickListener(v -> showChangeNameDialog());
@@ -52,7 +73,13 @@ public class TrainerFragment extends Fragment {
         return root;
     }
 
+
     private void searchTrainer(String name) {
+        if (trainers == null || trainers.isEmpty()) {
+            Toast.makeText(requireContext(), "No trainers available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         for (Trainer trainer : trainers) {
             if (trainer.getName().equalsIgnoreCase(name)) {
                 currentTrainer = trainer;
@@ -63,34 +90,6 @@ public class TrainerFragment extends Fragment {
         Toast.makeText(requireContext(), "Trainer not found", Toast.LENGTH_SHORT).show();
     }
 
-    public List<Trainer> getTrainers() {
-        List<Trainer> trainers = new ArrayList<>();
-        trainers.add(new Trainer("Ash", 1000, new ArrayList<>(), new ArrayList<>()));
-        trainers.add(new Trainer("Misty", 1500, new ArrayList<>(), new ArrayList<>()));
-        trainers.add(new Trainer("Brock", 1200, new ArrayList<>(), new ArrayList<>()));
-
-        List<List<String>> items = getItems();
-        for (int i = 0; i < trainers.size(); i++) {
-            Trainer trainer = trainers.get(i);
-            List<String> trainerItems = items.get(i);
-            trainer.getItems().addAll(trainerItems);
-        }
-
-        return trainers;
-    }
-
-    public List<List<String>> getItems() {
-        List<List<String>> allItems = new ArrayList<>();
-        List<String> ashItems = Arrays.asList("Potion", "Revive", "Great Ball");
-        List<String> mistyItems = Arrays.asList("Potion", "Super Potion", "Ultra Ball");
-        List<String> brockItems = Arrays.asList("Potion", "Max Potion", "Master Ball");
-
-        allItems.add(ashItems);
-        allItems.add(mistyItems);
-        allItems.add(brockItems);
-
-        return allItems;
-    }
 
 
     // Method to update Trainer's information
@@ -155,7 +154,6 @@ public class TrainerFragment extends Fragment {
         pokemonFragment.fetchPokemonDetails(pokemon, new PokemonFragment.PokemonDetailsCallback() {
             @Override
             public void onPokemonDetailsFetched(Pokemon pokemon) {
-                // Update the trainer object with the fetched PokemonDetails
                 if (trainer != null && pokemon != null) {
                     trainer.addPokemon(pokemon);
                     updateTrainerInfo(trainer);

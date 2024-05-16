@@ -115,56 +115,6 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         });
     }
 
-    @Override
-    public void onPokemonClick(Pokemon pokemon) {
-        Log.d("PokemonFragment", "Clicked on Pokemon: " + pokemon.getName());
-        // Fetch Pokémon details when clicked
-        fetchPokemonDetails(pokemon, new PokemonDetailsCallback() {
-            @Override
-            public void onPokemonDetailsFetched(Pokemon pokemon) {
-                displayPokemonDetails(pokemon);
-                // Prompt user to add the clicked Pokemon to a Trainer
-                showAddPokemonDialog(pokemon);
-            }
-        });
-    }
-
-    private void showAddPokemonDialog(Pokemon pokemon) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Add Pokemon to Trainer");
-        builder.setMessage("Do you want to add " + pokemon.getName() + " to a Trainer?");
-
-        // Set up the buttons
-        builder.setPositiveButton("Add", (dialog, which) -> {
-            // Implement logic to choose a Trainer to add the Pokemon to
-            // For demonstration, let's assume we have a list of trainers
-            // and user can select one from them
-            chooseTrainerToAddPokemon(pokemon);
-        });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }
-
-    private void chooseTrainerToAddPokemon(Pokemon pokemon) {
-        TrainerFragment trainerFragment = new TrainerFragment();
-        List<Trainer> trainers = trainerFragment.getTrainers();
-        String[] trainerNames = new String[trainers.size()];
-        for (int i = 0; i < trainers.size(); i++) {
-            trainerNames[i] = trainers.get(i).getName();
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Choose Trainer");
-        builder.setItems(trainerNames, (dialog, which) -> {
-            Trainer selectedTrainer = trainers.get(which);
-
-            trainerFragment.addPokemonToTrainer(selectedTrainer, pokemon);
-        });
-
-        builder.show();
-    }
-
     public void fetchPokemonDetails(Pokemon pokemon, PokemonDetailsCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -232,17 +182,16 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         });
     }
 
+    @Override
+    public void onPokemonClick(Pokemon pokemon) {
+
+    }
+
     // Inner interface for PokemonDetailsCallback
     public interface PokemonDetailsCallback {
         void onPokemonDetailsFetched(Pokemon pokemon);
     }
 
-    // Method to display Pokemon details (for demonstration)
-    private void displayPokemonDetails(Pokemon pokemon) {
-        // Implement logic to display Pokemon details in your app UI
-        // This method is just for demonstration
-        Log.d("PokemonDetails", pokemon.toString());
-    }
 
 
 
