@@ -46,16 +46,6 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
-
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = viewHolder.getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && listener != null) {
-                    listener.onPokemonClick(dataset.get(position));
-                }
-            }
-        });
         return viewHolder;
     }
 
@@ -70,16 +60,6 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.pictureImageView);
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onPokemonClick(p);
-                }
-            }
-        });
-
     }
 
     @Override
@@ -105,18 +85,16 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
 
         public ViewHolder(View itemView) {
             super(itemView);
-
             pictureImageView = itemView.findViewById(R.id.pictureImageView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
-
             itemView.setOnClickListener(this);
         }
-
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION && listener != null) {
-                listener.onPokemonClick(dataset.get(position));
+                Pokemon clickedPokemon = dataset.get(position);
+                listener.onPokemonClick(clickedPokemon);
             }
         }
     }

@@ -1,10 +1,8 @@
 package edu.url.salle.magdalena.morag.pokeapp.fragment;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,12 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.R;
-
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
@@ -41,6 +36,8 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
     private ArrayList<Pokemon> pokemonList;
 
     private static final String BASE_URL = "https://pokeapi.co/api/v2/";
+
+    private int currentPokemonId = 1;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_pokedex, container, false);
@@ -95,14 +92,13 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                     JSONArray results = response.getJSONArray("results");
                     for (int i = 0; i < results.length(); i++) {
                         JSONObject pokemonJson = results.getJSONObject(i);
-                        int pokemonID = i + 1;
                         String pokemonName = pokemonJson.getString("name");
                         String pokemonUrl = pokemonJson.getString("url");
-                        Pokemon pokemon = new Pokemon(pokemonName, pokemonUrl);
-                        pokemon.setId(pokemonID);
+                        int pokemonId = i + 1;
+                        Pokemon pokemon = new Pokemon(pokemonId, pokemonName, "", pokemonUrl);
                         pokemonList.add(pokemon);
                     }
-                    adapter.notifyDataSetChanged();
+                    adapter.addPokemonList(pokemonList);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -115,10 +111,9 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         });
     }
 
-    public void fetchPokemonDetails(Pokemon pokemon, PokemonDetailsCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
 
-        String url = BASE_URL + "pokemon/" + pokemon.getId();
+    public void fetchPokemonDetails(String url) {
+        AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url, new JsonHttpResponseHandler() {
             @Override
@@ -128,10 +123,12 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                     int height = response.getInt("height");
                     int weight = response.getInt("weight");
 
+                    // Fetching sprites
                     JSONObject sprites = response.getJSONObject("sprites");
                     String front_default = sprites.getString("front_default");
                     String back_default = sprites.getString("back_default");
 
+                    // Fetching types
                     JSONArray typesArray = response.getJSONArray("types");
                     ArrayList<String> typesList = new ArrayList<>();
                     for (int i = 0; i < typesArray.length(); i++) {
@@ -140,6 +137,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         typesList.add(typeName);
                     }
 
+                    // Fetching abilities
                     JSONArray abilitiesArray = response.getJSONArray("abilities");
                     ArrayList<String> abilitiesList = new ArrayList<>();
                     for (int i = 0; i < abilitiesArray.length(); i++) {
@@ -148,6 +146,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         abilitiesList.add(abilityName);
                     }
 
+                    // Fetching stats
                     JSONArray statsArray = response.getJSONArray("stats");
                     ArrayList<String> statsList = new ArrayList<>();
                     for (int i = 0; i < statsArray.length(); i++) {
@@ -157,19 +156,22 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         statsList.add(statName + ": " + baseStat);
                     }
 
-                    Pokemon pokemon = new Pokemon(
+                    // Creating pokemon with fetched details
+                    Pokemon updatedPokemon = new Pokemon(
+                            0, // Placeholder for ID, as it's not known yet
                             name,
-                            height,
-                            weight,
                             front_default,
                             back_default,
+                            height,
+                            weight,
                             typesList,
-                            "", // Not coming from the API
                             abilitiesList,
                             statsList
                     );
 
-                    callback.onPokemonDetailsFetched(pokemon);
+                    // Updating pokemon in the list
+                    updatePokemonInList(updatedPokemon);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -182,17 +184,33 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         });
     }
 
+
+    public void addPokemonToTrainer(Trainer trainer, Pokemon pokemon) {
+        String url;
+        if (pokemon.getId() != 0) {
+            url = BASE_URL + "pokemon/" + pokemon.getId();
+        } else {
+            url = BASE_URL + "pokemon/" + pokemon.getName();
+        }
+        fetchPokemonDetails(url);
+    }
+
+    // Helper method to update pokemon details in the list
+    private void updatePokemonInList(Pokemon updatedPokemon) {
+        for (int i = 0; i < pokemonList.size(); i++) {
+            if (pokemonList.get(i).getId() == updatedPokemon.getId()) {
+                pokemonList.set(i, updatedPokemon);
+                adapter.notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     @Override
     public void onPokemonClick(Pokemon pokemon) {
-
+        String url = BASE_URL + "pokemon/" + pokemon.getId();
+        fetchPokemonDetails(url);
     }
-
-    // Inner interface for PokemonDetailsCallback
-    public interface PokemonDetailsCallback {
-        void onPokemonDetailsFetched(Pokemon pokemon);
-    }
-
-
 
 
 }

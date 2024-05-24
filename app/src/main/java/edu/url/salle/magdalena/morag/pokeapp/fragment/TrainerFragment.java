@@ -85,7 +85,7 @@ public class TrainerFragment extends Fragment {
             if (trainer.getName().equalsIgnoreCase(name)) {
                 currentTrainer = trainer;
                 updateTrainerInfo(currentTrainer);
-                showButtons();
+                //showButtons();
                 return;
             }
         }
@@ -149,7 +149,7 @@ public class TrainerFragment extends Fragment {
     }
 
     // Method to fetch Pokemon details and add it to the Trainer
-    public void addPokemonToTrainer(Trainer trainer, Pokemon pokemon) {
+   /* public void addPokemonToTrainer(Trainer trainer, Pokemon pokemon) {
         PokemonFragment pokemonFragment = new PokemonFragment();
         pokemonFragment.fetchPokemonDetails(pokemon, new PokemonFragment.PokemonDetailsCallback() {
             @Override
@@ -228,7 +228,7 @@ public class TrainerFragment extends Fragment {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
-    }
+    }*/
 
 
 }
