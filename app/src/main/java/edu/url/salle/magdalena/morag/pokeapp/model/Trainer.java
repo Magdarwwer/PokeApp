@@ -23,14 +23,16 @@ public class Trainer {
         this.items = items;
         this.pokedex = pokedex;
     }
-    public Trainer(int id, String name, int money,
-                   ArrayList<String> items, ArrayList<Pokemon> pokedex) {
+
+
+    public Trainer(int id, String name, int money, ArrayList<String> items, ArrayList<Pokemon> pokedex) {
         this.id = id;
         this.name = name;
         this.money = money;
         this.items = items;
         this.pokedex = pokedex;
     }
+
 
     public void updateName(String newName) {
         this.name = newName;
@@ -148,5 +150,8 @@ public class Trainer {
         money += 400 + 100 * typePokemon;
     }
 
+    public ArrayList<Pokemon> getCapturedPokemons() {
+        return pokedex;
+    }
 
 }

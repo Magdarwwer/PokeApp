@@ -14,11 +14,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.Random;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.AbilityAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.StatAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.TypeAdapter;
+import edu.url.salle.magdalena.morag.pokeapp.fragment.TrainerFragment;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
@@ -44,7 +44,11 @@ public class PokemonDetailActivity extends AppCompatActivity {
     private Button catchButton;
 
     private Trainer currentTrainer;
+    private TrainerFragment trainerFragment;
 
+    public void setTrainerFragment(TrainerFragment fragment) {
+        this.trainerFragment = fragment;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,17 @@ public class PokemonDetailActivity extends AppCompatActivity {
         backImageView = findViewById(R.id.imageViewBackDetail);
         heightTextView = findViewById(R.id.textViewHeight);
         weightTextView = findViewById(R.id.textViewWeight);
+
+        Button captureButton = findViewById(R.id.buttonCapturePokemon);
+        captureButton.setOnClickListener(v -> {
+            if (currentTrainer != null) {
+                Pokemon pokemonToCapture = getCurrentPokemonToInteract();
+                String pokeballType = "Pokeball";
+                trainerFragment.performTransaction(0, "capture", pokemonToCapture, pokeballType);
+            } else {
+                Toast.makeText(this, "TrainerFragment is not set", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("pokemon") && intent.hasExtra("fullPokemonList")) {
@@ -118,6 +133,20 @@ public class PokemonDetailActivity extends AppCompatActivity {
         currentTrainer = getCurrentTrainer();
     }
 
+    public Pokemon getCurrentPokemonToInteract() {
+        if (currentTrainer != null && currentTrainer.getCapturedPokemons() != null && !currentTrainer.getCapturedPokemons().isEmpty()) {
+            ArrayList<Pokemon> capturedPokemons = currentTrainer.getCapturedPokemons();
+
+            Random random = new Random();
+            int index = random.nextInt(capturedPokemons.size());
+
+            return capturedPokemons.get(index);
+        } else {
+
+            return null;
+        }
+    }
+
     private Trainer getCurrentTrainer() {
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         String trainerName = sharedPreferences.getString("trainer_name", null);
@@ -128,8 +157,6 @@ public class PokemonDetailActivity extends AppCompatActivity {
     }
 
     private void showCatchDialog(Pokemon pokemon) {
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-
         List<String> items = currentTrainer.getItems();
         String[] pokeballs = items.toArray(new String[0]);
 
@@ -141,6 +168,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
 
     private void catchPokemon(Pokemon pokemon, String pokeball) {
         Toast.makeText(this, "Caught " + pokemon.getName() + " with a " + pokeball + "!", Toast.LENGTH_SHORT).show();

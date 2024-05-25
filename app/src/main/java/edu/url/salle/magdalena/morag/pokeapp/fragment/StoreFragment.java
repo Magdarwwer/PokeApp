@@ -11,41 +11,31 @@ import androidx.annotation.Nullable;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.model.Store;
+import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class StoreFragment extends Fragment implements View.OnClickListener {
 
-    private int money; // The current amount of money the trainer has
+    private int money;
+    private Trainer trainer;
+    private TrainerFragment trainerFragment;
+
+    public void setTrainerFragment(TrainerFragment fragment) {
+        this.trainerFragment = fragment;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_store, container, false);
 
-        TextView textViewPokeballPrice = root.findViewById(R.id.textViewPokeballPrice);
-        TextView textViewSuperballPrice = root.findViewById(R.id.textViewSuperballPrice);
-        TextView textViewUltraballPrice = root.findViewById(R.id.textViewUltraballPrice);
-        TextView textViewMasterballPrice = root.findViewById(R.id.textViewMasterballPrice);
+        if (trainer != null) {
+            money = trainer.getMoney();
+        } else {
+            money = 0;
+        }
 
-        Button buttonBuyPokeball = root.findViewById(R.id.buttonBuyPokeball);
-        Button buttonBuySuperball = root.findViewById(R.id.buttonBuySuperball);
-        Button buttonBuyUltraball = root.findViewById(R.id.buttonBuyUltraball);
-        Button buttonBuyMasterball = root.findViewById(R.id.buttonBuyMasterball);
-
-        buttonBuyPokeball.setOnClickListener(this);
-        buttonBuySuperball.setOnClickListener(this);
-        buttonBuyUltraball.setOnClickListener(this);
-        buttonBuyMasterball.setOnClickListener(this);
-
-        textViewPokeballPrice.setText(getString(R.string.price_format, Store.POKEBALL_PRICE));
-        textViewSuperballPrice.setText(getString(R.string.price_format, Store.SUPERBALL_PRICE));
-        textViewUltraballPrice.setText(getString(R.string.price_format, Store.ULTRABALL_PRICE));
-        textViewMasterballPrice.setText(getString(R.string.price_format, Store.MASTERBALL_PRICE));
-
-        money = 1000;
 
         return root;
     }
@@ -71,13 +61,21 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
 
         buyItem(itemName, price);
     }
-
     private void buyItem(String itemName, int price) {
-        if (money >= price) {
-            money -= price;
-            Toast.makeText(requireContext(), "Bought " + itemName + " for " + price + " coins.", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(requireContext(), "Not enough money to buy " + itemName + ".", Toast.LENGTH_SHORT).show();
+        if (trainer != null) {
+            if (trainer.getMoney() >= price) {
+                int remainingMoney = trainer.getMoney() - price;
+                trainer.setMoney(remainingMoney);
+                Toast.makeText(requireContext(), "Bought " + itemName + " for " + price + " coins.", Toast.LENGTH_SHORT).show();
+                trainerFragment.updateTrainerInfo(trainer);
+            } else {
+                Toast.makeText(requireContext(), "Not enough money to buy " + itemName + ".", Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+
+    public void setTrainer(Trainer trainer) {
+        this.trainer = trainer;
     }
 }

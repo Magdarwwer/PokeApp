@@ -197,4 +197,7 @@ public class Pokemon implements Parcelable {
         dest.writeTypedList(abilitiesList);
         dest.writeTypedList(statsList);
     }
+
+
+
 }

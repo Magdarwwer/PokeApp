@@ -7,8 +7,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
@@ -21,7 +21,7 @@ public class FileHandler {
         this.context = context;
     }
 
-    public void saveTrainers(List<Trainer> trainers) {
+    public void saveTrainers(ArrayList<Trainer> trainers) {
         try {
             Gson gson = new Gson();
             String json = gson.toJson(trainers);
@@ -33,17 +33,28 @@ public class FileHandler {
         }
     }
 
-    public List<Trainer> loadTrainers() {
+    public ArrayList<Trainer> loadTrainers() {
+        ArrayList<Trainer> loadedTrainers = new ArrayList<>();
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(context.getFilesDir() + "/" + TRAINERS_FILE));
-            Gson gson = new Gson();
-            Trainer[] trainersArray = gson.fromJson(br, Trainer[].class);
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
             br.close();
-            return Arrays.asList(trainersArray);
+
+            String json = jsonBuilder.toString();
+            Gson gson = new Gson();
+            Trainer[] trainersArray = gson.fromJson(json, Trainer[].class);
+            if (trainersArray != null) {
+                loadedTrainers.addAll(Arrays.asList(trainersArray));
+            }
         } catch (IOException e) {
             Log.e("FileHandler", "Error loading trainers", e);
-            return null;
         }
-    }
 
+        return loadedTrainers;
+    }
 }
