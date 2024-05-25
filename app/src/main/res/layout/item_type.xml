@@ -4,13 +4,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/textViewType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:textColor="@android:color/black"
-        android:text="Type Name" />
-
+        android:text="Type Name"
+        android:textColor="@android:color/black" />
 
 </LinearLayout>

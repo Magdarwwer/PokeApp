@@ -14,18 +14,20 @@ public class Pokemon implements Parcelable {
     private String back_default;
     private int height;
     private int weight;
+    private String description;
     private ArrayList<Type> typesList;
     private ArrayList<Ability> abilitiesList;
     private ArrayList<Stat> statsList;
     private boolean isCaught;
 
-    public Pokemon(int id, String name, String pokemonUrl, String front_default, String back_default, int height, int weight,
+    public Pokemon(int id, String name, String pokemonUrl, String front_default, String back_default, String description, int height, int weight,
                    ArrayList<Type> typesList, ArrayList<Ability> abilitiesList, ArrayList<Stat> statsList) {
         this.id = id;
         this.name = name;
         this.pokemonUrl = pokemonUrl;
         this.front_default = front_default;
         this.back_default = back_default;
+        this.description = description;
         this.height = height;
         this.weight = weight;
         this.typesList = typesList;
@@ -39,6 +41,7 @@ public class Pokemon implements Parcelable {
         pokemonUrl = in.readString();
         front_default = in.readString();
         back_default = in.readString();
+        description = in.readString();
         height = in.readInt();
         weight = in.readInt();
         typesList = in.createTypedArrayList(Type.CREATOR);
@@ -61,6 +64,14 @@ public class Pokemon implements Parcelable {
     public Pokemon(int pokemonId, String pokemonName) {
         this.id = pokemonId;
         this.name = pokemonName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getPokemonUrl() {
@@ -179,6 +190,7 @@ public class Pokemon implements Parcelable {
         dest.writeString(pokemonUrl);
         dest.writeString(front_default);
         dest.writeString(back_default);
+        dest.writeString(description);
         dest.writeInt(height);
         dest.writeInt(weight);
         dest.writeTypedList(typesList);

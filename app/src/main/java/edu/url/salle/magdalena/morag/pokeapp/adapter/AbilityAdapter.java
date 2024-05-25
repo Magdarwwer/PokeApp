@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.model.Ability;
@@ -16,9 +18,20 @@ import edu.url.salle.magdalena.morag.pokeapp.model.Ability;
 public class AbilityAdapter extends RecyclerView.Adapter<AbilityAdapter.ViewHolder> {
 
     private ArrayList<Ability> abilities;
+    private Set<Ability> selectedAbilities;
+    private AbilityClickListener abilityClickListener;
 
     public AbilityAdapter() {
         this.abilities = new ArrayList<>();
+        this.selectedAbilities = new HashSet<>();
+    }
+
+    public interface AbilityClickListener {
+        void onAbilityClicked(Ability ability);
+    }
+
+    public void setAbilityClickListener(AbilityClickListener listener) {
+        this.abilityClickListener = listener;
     }
 
     @NonNull
@@ -32,6 +45,28 @@ public class AbilityAdapter extends RecyclerView.Adapter<AbilityAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Ability ability = abilities.get(position);
         holder.textViewAbility.setText(ability.getName());
+
+        boolean isHidden = Ability.isHiddenAbility();
+        ability.setHidden(isHidden);
+
+        // Toggle selection on click
+        holder.itemView.setOnClickListener(v -> {
+            if (selectedAbilities.contains(ability)) {
+                selectedAbilities.remove(ability);
+            } else {
+                selectedAbilities.add(ability);
+            }
+            if (abilityClickListener != null) {
+                abilityClickListener.onAbilityClicked(ability);
+            }
+            notifyDataSetChanged();
+        });
+
+        if (selectedAbilities.contains(ability)) {
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getColor(R.color.selectedAbilityColor));
+        } else {
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getColor(android.R.color.transparent));
+        }
     }
 
     @Override
@@ -53,7 +88,12 @@ public class AbilityAdapter extends RecyclerView.Adapter<AbilityAdapter.ViewHold
         return abilities;
     }
 
+    public Set<Ability> getSelectedAbilities() {
+        return selectedAbilities;
+    }
+
     public void setAbilities(ArrayList<Ability> abilities) {
         this.abilities = abilities;
+        notifyDataSetChanged();
     }
 }

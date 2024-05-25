@@ -33,6 +33,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
     private ImageView backImageView;
     private TextView heightTextView;
     private TextView weightTextView;
+    private TextView descriptionTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,8 @@ public class PokemonDetailActivity extends AppCompatActivity {
         abilitiesRecyclerView = findViewById(R.id.recyclerViewAbilities);
         statsRecyclerView = findViewById(R.id.recyclerViewStats);
         typesRecyclerView = findViewById(R.id.recyclerViewTypes);
+        descriptionTextView = findViewById(R.id.textViewDescription);
+
 
         abilityAdapter = new AbilityAdapter();
         statAdapter = new StatAdapter();
@@ -62,6 +65,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
         heightTextView = findViewById(R.id.textViewHeight);
         weightTextView = findViewById(R.id.textViewWeight);
 
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("pokemon") && intent.hasExtra("fullPokemonList")) {
             Pokemon pokemon = intent.getParcelableExtra("pokemon");
@@ -78,10 +82,10 @@ public class PokemonDetailActivity extends AppCompatActivity {
                     }
 
                     if (selectedPokemon != null) {
-                        // Set basic Pokemon information
                         nameTextView.setText(selectedPokemon.getName().toUpperCase());
                         heightTextView.setText("Height: " + selectedPokemon.getHeight());
                         weightTextView.setText("Weight: " + selectedPokemon.getWeight());
+                        descriptionTextView.setText(selectedPokemon.getDescription());
 
                         // Load Pokemon images
                         Glide.with(this)

@@ -10,15 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
+import edu.url.salle.magdalena.morag.pokeapp.model.Store;
 
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class StoreFragment extends Fragment implements View.OnClickListener {
-
-    private TextView textViewPokeballPrice, textViewSuperballPrice, textViewUltraballPrice, textViewMasterballPrice;
-    private Button buttonBuyPokeball, buttonBuySuperball, buttonBuyUltraball, buttonBuyMasterball;
 
     private int money; // The current amount of money the trainer has
 
@@ -27,66 +25,59 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_store, container, false);
 
-        // Initialize views
-        textViewPokeballPrice = root.findViewById(R.id.textViewPokeballPrice);
-        textViewSuperballPrice = root.findViewById(R.id.textViewSuperballPrice);
-        textViewUltraballPrice = root.findViewById(R.id.textViewUltraballPrice);
-        textViewMasterballPrice = root.findViewById(R.id.textViewMasterballPrice);
+        TextView textViewPokeballPrice = root.findViewById(R.id.textViewPokeballPrice);
+        TextView textViewSuperballPrice = root.findViewById(R.id.textViewSuperballPrice);
+        TextView textViewUltraballPrice = root.findViewById(R.id.textViewUltraballPrice);
+        TextView textViewMasterballPrice = root.findViewById(R.id.textViewMasterballPrice);
 
-        buttonBuyPokeball = root.findViewById(R.id.buttonBuyPokeball);
-        buttonBuySuperball = root.findViewById(R.id.buttonBuySuperball);
-        buttonBuyUltraball = root.findViewById(R.id.buttonBuyUltraball);
-        buttonBuyMasterball = root.findViewById(R.id.buttonBuyMasterball);
+        Button buttonBuyPokeball = root.findViewById(R.id.buttonBuyPokeball);
+        Button buttonBuySuperball = root.findViewById(R.id.buttonBuySuperball);
+        Button buttonBuyUltraball = root.findViewById(R.id.buttonBuyUltraball);
+        Button buttonBuyMasterball = root.findViewById(R.id.buttonBuyMasterball);
 
-        // Set onClickListener for buttons
         buttonBuyPokeball.setOnClickListener(this);
         buttonBuySuperball.setOnClickListener(this);
         buttonBuyUltraball.setOnClickListener(this);
         buttonBuyMasterball.setOnClickListener(this);
 
-        // Set item prices
-        textViewPokeballPrice.setText(getString(R.string.price_format, 200));
-        textViewSuperballPrice.setText(getString(R.string.price_format, 500));
-        textViewUltraballPrice.setText(getString(R.string.price_format, 1500));
-        textViewMasterballPrice.setText(getString(R.string.price_format, 100000));
+        textViewPokeballPrice.setText(getString(R.string.price_format, Store.POKEBALL_PRICE));
+        textViewSuperballPrice.setText(getString(R.string.price_format, Store.SUPERBALL_PRICE));
+        textViewUltraballPrice.setText(getString(R.string.price_format, Store.ULTRABALL_PRICE));
+        textViewMasterballPrice.setText(getString(R.string.price_format, Store.MASTERBALL_PRICE));
 
-        // Set initial money
-        money = 1000; // Initial amount of money
+        money = 1000;
 
         return root;
     }
 
-   /* @Override
+    @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.buttonBuyPokeball:
-                buyItem("Pokeball", 200);
-                break;
-            case R.id.buttonBuySuperball:
-                buyItem("Superball", 500);
-                break;
-            case R.id.buttonBuyUltraball:
-                buyItem("Ultraball", 1500);
-                break;
-            case R.id.buttonBuyMasterball:
-                buyItem("Masterball", 100000);
-                break;
+        int price = 0;
+        String itemName = "";
+
+        if (v.getId() == R.id.buttonBuyPokeball) {
+            price = Store.POKEBALL_PRICE;
+            itemName = "Pokeball";
+        } else if (v.getId() == R.id.buttonBuySuperball) {
+            price = Store.SUPERBALL_PRICE;
+            itemName = "Superball";
+        } else if (v.getId() == R.id.buttonBuyUltraball) {
+            price = Store.ULTRABALL_PRICE;
+            itemName = "Ultraball";
+        } else if (v.getId() == R.id.buttonBuyMasterball) {
+            price = Store.MASTERBALL_PRICE;
+            itemName = "Masterball";
         }
-    }*/
+
+        buyItem(itemName, price);
+    }
 
     private void buyItem(String itemName, int price) {
         if (money >= price) {
-            // Subtract the price from the trainer's money
             money -= price;
-            // Update the UI to reflect the new amount of money
             Toast.makeText(requireContext(), "Bought " + itemName + " for " + price + " coins.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(requireContext(), "Not enough money to buy " + itemName + ".", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 }

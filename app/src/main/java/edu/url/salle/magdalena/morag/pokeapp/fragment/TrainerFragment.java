@@ -1,5 +1,3 @@
-package edu.url.salle.magdalena.morag.pokeapp.fragment;
-
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
@@ -19,8 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
-
-import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
 public class TrainerFragment extends Fragment {
@@ -41,30 +37,36 @@ public class TrainerFragment extends Fragment {
         textViewItems = root.findViewById(R.id.textViewItems);
         textViewCapturedPokemons = root.findViewById(R.id.textViewCapturedPokemons);
 
+        // Define items for trainers
         List<String> ashItems = Arrays.asList("Potion", "Revive", "Great Ball");
         List<String> mistyItems = Arrays.asList("Potion", "Super Potion", "Ultra Ball");
         List<String> brockItems = Arrays.asList("Potion", "Max Potion", "Master Ball");
 
+        // Create trainers
         trainers = new ArrayList<>();
         Trainer ash = new Trainer(1, "Ash", 1000, new ArrayList<>(), new ArrayList<>());
         Trainer misty = new Trainer(2, "Misty", 1500, new ArrayList<>(), new ArrayList<>());
         Trainer brock = new Trainer(3, "Brock", 1200, new ArrayList<>(), new ArrayList<>());
 
+        // Add trainers to the list
         trainers.add(ash);
         trainers.add(misty);
         trainers.add(brock);
 
+        // Define items list for each trainer
         List<List<String>> items = new ArrayList<>();
         items.add(ashItems);
         items.add(mistyItems);
         items.add(brockItems);
 
+        // Assign items to trainers
         for (int i = 0; i < trainers.size(); i++) {
             Trainer trainer = trainers.get(i);
             List<String> trainerItems = items.get(i);
             trainer.getItems().addAll(trainerItems);
         }
 
+        // Set up buttons
         Button openDialogButton = root.findViewById(R.id.buttonOpenDialog);
         openDialogButton.setOnClickListener(v -> showChangeNameDialog());
 
@@ -73,7 +75,6 @@ public class TrainerFragment extends Fragment {
 
         return root;
     }
-
 
     private void searchTrainer(String name) {
         if (trainers == null || trainers.isEmpty()) {
@@ -85,22 +86,18 @@ public class TrainerFragment extends Fragment {
             if (trainer.getName().equalsIgnoreCase(name)) {
                 currentTrainer = trainer;
                 updateTrainerInfo(currentTrainer);
-                //showButtons();
                 return;
             }
         }
         Toast.makeText(requireContext(), "Trainer not found", Toast.LENGTH_SHORT).show();
     }
 
-    // Method to update Trainer's information
     private void updateTrainerInfo(Trainer trainer) {
         textViewTrainerName.setText(trainer.getName());
         textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
         textViewItems.setText(TextUtils.join(", ", trainer.getItems()));
-        //textViewCapturedPokemons.setText(TextUtils.join(", ", trainer.getCapturedPokemons()));
     }
 
-    // Method to update Trainer's name
     private void updateTrainerName(String newName) {
         if (currentTrainer != null) {
             currentTrainer.setName(newName);
@@ -108,17 +105,14 @@ public class TrainerFragment extends Fragment {
         }
     }
 
-    // Method to show dialog for changing Trainer's name
     private void showChangeNameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Change Trainer's Name");
 
-        // Set up the input
         final EditText input = new EditText(requireContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        // Set up the buttons
         builder.setPositiveButton("OK", (dialog, which) -> {
             String newName = input.getText().toString().trim();
             updateTrainerName(newName);
@@ -128,17 +122,14 @@ public class TrainerFragment extends Fragment {
         builder.show();
     }
 
-    // Method to show dialog for searching Trainer
     private void showSearchDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Search Trainer");
 
-        // Set up the input
         final EditText input = new EditText(requireContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        // Set up the buttons
         builder.setPositiveButton("Search", (dialog, which) -> {
             String searchName = input.getText().toString().trim();
             searchTrainer(searchName);
@@ -148,87 +139,19 @@ public class TrainerFragment extends Fragment {
         builder.show();
     }
 
-    // Method to fetch Pokemon details and add it to the Trainer
-   /* public void addPokemonToTrainer(Trainer trainer, Pokemon pokemon) {
-        PokemonFragment pokemonFragment = new PokemonFragment();
-        pokemonFragment.fetchPokemonDetails(pokemon, new PokemonFragment.PokemonDetailsCallback() {
-            @Override
-            public void onPokemonDetailsFetched(Pokemon pokemon) {
-                if (trainer != null && pokemon != null) {
-                    trainer.addPokemon(pokemon);
-                    updateTrainerInfo(trainer);
-                    showToastMessage("Added " + pokemon.getName() + " to " + trainer.getName());
-                }
+    private void handleMoneyCalculation(int moneySpent) {
+        if (currentTrainer != null) {
+            int currentMoney = currentTrainer.getMoney();
+            int remainingMoney = currentMoney - moneySpent;
+
+            if (remainingMoney >= 0) {
+                currentTrainer.setMoney(remainingMoney);
+                updateTrainerInfo(currentTrainer);
+                Toast.makeText(requireContext(), "Transaction successful", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Insufficient funds", Toast.LENGTH_SHORT).show();
             }
-        });
-    }
-
-    private void showToastMessage(String message) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void onAddPokemonButtonClick(Trainer trainer, Pokemon pokemon) {
-        addPokemonToTrainer(trainer, pokemon);
-    }
-
-    private void showButtons() {
-        ViewGroup layout = root.findViewById(R.id.buttonShowOrNotShow);
-        layout.removeAllViews();
-
-        if (currentTrainer == null) {
-            return;
-        }
-
-        // If there are less than 6 pokemons, show "Add Pokemon" button
-        if (currentTrainer.getCapturedPokemons().size() < 6) {
-            Button addButton = new Button(requireContext());
-            addButton.setText("Add Pokemon");
-            addButton.setOnClickListener(v -> showAddPokemonDialog(currentTrainer));
-            layout.addView(addButton);
-        } else {
-            // If there are 6 or more pokemons, show "Remove Pokemon" button
-            Button removeButton = new Button(requireContext());
-            removeButton.setText("Remove Pokemon");
-            removeButton.setOnClickListener(v -> showRemovePokemonDialog(currentTrainer));
-            layout.addView(removeButton);
         }
     }
-
-    private void showAddPokemonDialog(Trainer trainer) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Add Pokemon");
-
-        builder.setPositiveButton("OK", (dialog, which) -> {
-
-            showToastMessage("Add Pokemon logic to be implemented");
-        });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }
-
-    private void showRemovePokemonDialog(Trainer trainer) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Remove Pokemon");
-
-        List<Pokemon> capturedPokemons = trainer.getCapturedPokemons();
-
-        String[] pokemonNames = new String[capturedPokemons.size()];
-        for (int i = 0; i < capturedPokemons.size(); i++) {
-            pokemonNames[i] = capturedPokemons.get(i).getName();
-        }
-
-        builder.setItems(pokemonNames, (dialog, which) -> {
-            Pokemon removedPokemon = capturedPokemons.remove(which);
-            updateTrainerInfo(trainer);
-            showToastMessage("Removed " + removedPokemon.getName() + " from " + trainer.getName());
-            showButtons();
-        });
-
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }*/
-
 
 }

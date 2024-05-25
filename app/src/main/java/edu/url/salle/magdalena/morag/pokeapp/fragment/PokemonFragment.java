@@ -149,9 +149,10 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                     ArrayList<Ability> abilitiesList = new ArrayList<>();
                     for (int i = 0; i < abilitiesArray.length(); i++) {
                         JSONObject abilityObject = abilitiesArray.getJSONObject(i);
+                        boolean isHidden = abilityObject.getBoolean("is_hidden");
                         JSONObject abilityData = abilityObject.getJSONObject("ability");
                         String abilityName = abilityData.getString("name");
-                        Ability ability = new Ability(abilityName);
+                        Ability ability = new Ability(abilityName, isHidden);
                         abilitiesList.add(ability);
                     }
 
@@ -166,6 +167,10 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         statsList.add(stat);
                     }
 
+                    // Fetching description (flavor text)
+                    fetchSpeciesDetails(pokemon);
+
+                    // Setting Pokemon details
                     pokemon.setName(name);
                     pokemon.setFront_default(front_default);
                     pokemon.setBack_default(back_default);
@@ -189,6 +194,38 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         });
     }
 
+    private void fetchSpeciesDetails(Pokemon pokemon) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = BASE_URL + "pokemon-species/" + pokemon.getName();
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray flavorTextEntries = response.getJSONArray("flavor_text_entries");
+                    String flavorText = "";
+                    for (int i = 0; i < flavorTextEntries.length(); i++) {
+                        JSONObject entry = flavorTextEntries.getJSONObject(i);
+                        JSONObject language = entry.getJSONObject("language");
+                        String languageName = language.getString("name");
+                        if (languageName.equals("en")) {
+                            flavorText = entry.getString("flavor_text");
+                            break;
+                        }
+                    }
+                    pokemon.setDescription(flavorText);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(requireContext(), "Failed to fetch Pokémon species details", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     private void updatePokemonInList(Pokemon updatedPokemon) {
         for (int i = 0; i < pokemonList.size(); i++) {
             if (pokemonList.get(i).getId() == updatedPokemon.getId()) {
@@ -206,6 +243,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         intent.putExtra("name", pokemon.getName());
         intent.putExtra("height", pokemon.getHeight());
         intent.putExtra("weight", pokemon.getWeight());
+        intent.putExtra("description", pokemon.getDescription());
         intent.putExtra("front_default", pokemon.getFront_default());
         intent.putExtra("back_default", pokemon.getBack_default());
         intent.putExtra("typesList", pokemon.getTypesList());

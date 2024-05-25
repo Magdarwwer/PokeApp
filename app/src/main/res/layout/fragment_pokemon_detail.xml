@@ -34,6 +34,15 @@
         app:layout_constraintTop_toBottomOf="@id/textViewHeight"
         android:layout_marginTop="8dp"/>
 
+    <TextView
+        android:id="@+id/textViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weight"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewWeight"
+        android:layout_marginTop="8dp"/>
+
     <ImageView
         android:id="@+id/imageViewFrontDetail"
         android:layout_width="133dp"
@@ -41,7 +50,7 @@
         android:text="FrontPic"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewWeight"
+        app:layout_constraintTop_toBottomOf="@id/textViewDescription"
         android:layout_marginTop="16dp"/>
 
     <ImageView
