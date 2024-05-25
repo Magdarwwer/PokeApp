@@ -10,8 +10,9 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="Ability Name"
-        android:textColor="?attr/colorAccent"
+
         android:textStyle="bold"
+        android:textColor="#ebbd34"
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackground"
