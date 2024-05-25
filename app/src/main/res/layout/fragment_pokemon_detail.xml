@@ -5,47 +5,94 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Left pokeball icon -->
+    <ImageView
+        android:id="@+id/imageViewLeftPokeball"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/gamepoke"
+        app:layout_constraintTop_toTopOf="@id/textViewPokedex"
+        app:layout_constraintBottom_toBottomOf="@id/textViewPokedex"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Scripture POKEDEX -->
+    <TextView
+        android:id="@+id/textViewPokedex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="POKEDEX"
+        android:textSize="24sp"
+        android:textColor="#ebbd34"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Right pokeball icon -->
+    <ImageView
+        android:id="@+id/imageViewRightPokeball"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/gamepoke"
+        app:layout_constraintTop_toTopOf="@id/textViewPokedex"
+        app:layout_constraintBottom_toBottomOf="@id/textViewPokedex"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="100dp" />
+
+    <!-- Front Image -->
     <ImageView
         android:id="@+id/imageViewFrontDetail"
         android:layout_width="133dp"
         android:layout_height="133dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="140dp"
         android:text="FrontPic"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"/>
 
+    <!-- Back Image -->
     <ImageView
         android:id="@+id/imageViewBackDetail"
         android:layout_width="133dp"
         android:layout_height="133dp"
-        android:layout_marginStart="260dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="140dp"
         android:text="BackPic"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Name -->
     <TextView
         android:id="@+id/textViewNameDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="180dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="90dp"
         android:text="Name"
-        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <!-- Height -->
+
     <TextView
         android:id="@+id/textViewHeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="148dp"
         android:text="Height"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewNameDetail" />
@@ -64,8 +111,8 @@
         android:id="@+id/textViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
         android:text="Description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewWeight" />
@@ -148,6 +195,19 @@
         app:layout_constraintHorizontal_bias="0.938"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerViewStats" />
+
+    <!-- adding bottom navigation menu -->
+    <include
+        android:id="@+id/bottomNavigationView"
+        layout="@menu/bottom_nav_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

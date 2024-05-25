@@ -79,7 +79,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
         heightTextView = findViewById(R.id.textViewHeight);
         weightTextView = findViewById(R.id.textViewWeight);
 
-        Button captureButton = findViewById(R.id.buttonCapturePokemon);
+        Button captureButton = findViewById(R.id.buttonCatchPokemon);
         captureButton.setOnClickListener(v -> {
             if (currentTrainer != null) {
                 Pokemon pokemonToCapture = getCurrentPokemonToInteract();

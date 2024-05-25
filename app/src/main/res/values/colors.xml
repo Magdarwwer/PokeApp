@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="selectedAbilityColor">#FFFF00</color>
+    <color name="red">#F3473A</color>
 </resources>
