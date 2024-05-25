@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#000000"
     tools:ignore="ExtraText">
-
     <!-- Left pokeball icon -->
     <ImageView
         android:id="@+id/imageViewLeftPokeball"
@@ -111,10 +110,10 @@
 
     <TextView
         android:id="@+id/textViewDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="23dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:text="Description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewWeight" />
@@ -154,63 +153,35 @@
         android:layout_marginStart="16dp"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Lists -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTypes"
-        android:layout_width="91dp"
-        android:layout_height="201dp"
-        app:layout_constraintEnd_toEndOf="@id/textViewType"
+        android:layout_width="136dp"
+        android:layout_height="138dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/textViewType"
-        app:layout_constraintTop_toBottomOf="@id/textViewType"
-        app:layout_constraintWidth_default="spread" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewType" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAbilities"
-        android:layout_width="91dp"
-        android:layout_height="201dp"
-        app:layout_constraintEnd_toEndOf="@id/textViewAbility"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/textViewAbility"
-        app:layout_constraintTop_toBottomOf="@id/textViewAbility"
-        app:layout_constraintWidth_default="spread" />
+        android:layout_width="133dp"
+        android:layout_height="132dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewAbility" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewStats"
-        android:layout_width="91dp"
-        android:layout_height="201dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="@id/textViewStat"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/textViewStat"
-        app:layout_constraintTop_toBottomOf="@id/textViewStat"
-        app:layout_constraintWidth_default="spread" />
-
-    <Button
-        android:id="@+id/buttonCatchPokemon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="204dp"
-        android:text="Catch Pokémon"
+        android:layout_width="113dp"
+        android:layout_height="123dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintHorizontal_bias="0.946"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewStats" />
-
-    <!-- adding bottom navigation menu -->
-    <include
-        android:id="@+id/bottomNavigationView"
-        layout="@menu/bottom_nav_menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
+        app:layout_constraintTop_toBottomOf="@id/textViewStat" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

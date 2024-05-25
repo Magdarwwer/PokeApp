@@ -13,19 +13,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+
 import edu.url.salle.magdalena.morag.pokeapp.adapter.AbilityAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.StatAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.TypeAdapter;
-import edu.url.salle.magdalena.morag.pokeapp.fragment.TrainerFragment;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
-import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
-import android.app.AlertDialog;
-import android.content.SharedPreferences;
-import android.widget.Button;
-import android.widget.Toast;
 
 public class PokemonDetailActivity extends AppCompatActivity {
 
@@ -36,30 +29,23 @@ public class PokemonDetailActivity extends AppCompatActivity {
     private StatAdapter statAdapter;
     private TypeAdapter typeAdapter;
     private TextView nameTextView;
-
     private ImageView frontImageView;
     private ImageView backImageView;
     private TextView heightTextView;
     private TextView weightTextView;
     private TextView descriptionTextView;
-    private Button catchButton;
 
-    private Trainer currentTrainer;
-    private TrainerFragment trainerFragment;
-
-    public void setTrainerFragment(TrainerFragment fragment) {
-        this.trainerFragment = fragment;
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_pokemon_detail);
 
+        // Initialize RecyclerViews
         abilitiesRecyclerView = findViewById(R.id.recyclerViewAbilities);
         statsRecyclerView = findViewById(R.id.recyclerViewStats);
         typesRecyclerView = findViewById(R.id.recyclerViewTypes);
         descriptionTextView = findViewById(R.id.textViewDescription);
-        catchButton = findViewById(R.id.buttonCatchPokemon);
+
 
         abilityAdapter = new AbilityAdapter();
         statAdapter = new StatAdapter();
@@ -79,16 +65,6 @@ public class PokemonDetailActivity extends AppCompatActivity {
         heightTextView = findViewById(R.id.textViewHeight);
         weightTextView = findViewById(R.id.textViewWeight);
 
-        Button captureButton = findViewById(R.id.buttonCatchPokemon);
-        captureButton.setOnClickListener(v -> {
-            if (currentTrainer != null) {
-                Pokemon pokemonToCapture = getCurrentPokemonToInteract();
-                String pokeballType = "Pokeball";
-                trainerFragment.performTransaction(0, "capture", pokemonToCapture, pokeballType);
-            } else {
-                Toast.makeText(this, "TrainerFragment is not set", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("pokemon") && intent.hasExtra("fullPokemonList")) {
@@ -97,7 +73,13 @@ public class PokemonDetailActivity extends AppCompatActivity {
             if (pokemon != null && bundle != null) {
                 ArrayList<Pokemon> fullPokemonList = (ArrayList<Pokemon>) bundle.getSerializable("fullPokemonList");
                 if (fullPokemonList != null) {
-                    Pokemon selectedPokemon = fullPokemonList.stream().filter(p -> p.getId() == pokemon.getId()).findFirst().orElse(null);
+                    Pokemon selectedPokemon = null;
+                    for (Pokemon p : fullPokemonList) {
+                        if (p.getId() == pokemon.getId()) {
+                            selectedPokemon = p;
+                            break;
+                        }
+                    }
 
                     if (selectedPokemon != null) {
                         nameTextView.setText(selectedPokemon.getName().toUpperCase());
@@ -125,53 +107,9 @@ public class PokemonDetailActivity extends AppCompatActivity {
                         abilityAdapter.notifyDataSetChanged();
                         statAdapter.notifyDataSetChanged();
                         typeAdapter.notifyDataSetChanged();
-
-                        catchButton.setOnClickListener(v -> showCatchDialog(selectedPokemon));
                     }
                 }
             }
         }
-        currentTrainer = getCurrentTrainer();
-    }
-
-    public Pokemon getCurrentPokemonToInteract() {
-        if (currentTrainer != null && currentTrainer.getCapturedPokemons() != null && !currentTrainer.getCapturedPokemons().isEmpty()) {
-            ArrayList<Pokemon> capturedPokemons = currentTrainer.getCapturedPokemons();
-
-            Random random = new Random();
-            int index = random.nextInt(capturedPokemons.size());
-
-            return capturedPokemons.get(index);
-        } else {
-
-            return null;
-        }
-    }
-
-    private Trainer getCurrentTrainer() {
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        String trainerName = sharedPreferences.getString("trainer_name", null);
-        if (trainerName != null) {
-            return new Trainer(1, trainerName, 1000, new ArrayList<>(), new ArrayList<>());
-        }
-        return null;
-    }
-
-    private void showCatchDialog(Pokemon pokemon) {
-        List<String> items = currentTrainer.getItems();
-        String[] pokeballs = items.toArray(new String[0]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select a Pokéball");
-        builder.setItems(pokeballs, (dialog, which) -> {
-            String selectedBall = pokeballs[which];
-            catchPokemon(pokemon, selectedBall);
-        });
-        builder.show();
-    }
-
-
-    private void catchPokemon(Pokemon pokemon, String pokeball) {
-        Toast.makeText(this, "Caught " + pokemon.getName() + " with a " + pokeball + "!", Toast.LENGTH_SHORT).show();
     }
 }

@@ -209,8 +209,6 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         String languageName = language.getString("name");
                         if (languageName.equals("en")) {
                             flavorText = entry.getString("flavor_text");
-                            // Remove line breaks
-                            flavorText = flavorText.replaceAll("\\r\\n|\\r|\\n", " ");
                             break;
                         }
                     }
@@ -226,6 +224,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
             }
         });
     }
+
 
     private void updatePokemonInList(Pokemon updatedPokemon) {
         for (int i = 0; i < pokemonList.size(); i++) {

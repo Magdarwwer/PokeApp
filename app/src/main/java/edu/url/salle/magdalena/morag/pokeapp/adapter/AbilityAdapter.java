@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
@@ -46,16 +47,9 @@ public class AbilityAdapter extends RecyclerView.Adapter<AbilityAdapter.ViewHold
         Ability ability = abilities.get(position);
         holder.textViewAbility.setText(ability.getName());
 
-        boolean isHidden = Ability.isHiddenAbility();
-        ability.setHidden(isHidden);
-
         // Toggle selection on click
         holder.itemView.setOnClickListener(v -> {
-            if (selectedAbilities.contains(ability)) {
-                selectedAbilities.remove(ability);
-            } else {
-                selectedAbilities.add(ability);
-            }
+            handleAbilitySelection(ability);
             if (abilityClickListener != null) {
                 abilityClickListener.onAbilityClicked(ability);
             }
@@ -95,5 +89,39 @@ public class AbilityAdapter extends RecyclerView.Adapter<AbilityAdapter.ViewHold
     public void setAbilities(ArrayList<Ability> abilities) {
         this.abilities = abilities;
         notifyDataSetChanged();
+    }
+
+    private void handleAbilitySelection(Ability ability) {
+        selectedAbilities.clear();
+        selectedAbilities.add(ability);
+
+        Random random = new Random();
+        int probability = random.nextInt(100);
+        if (ability.isHidden()) {
+            if (probability < 75) {
+                Ability alternateAbility = getRandomAlternateAbility(ability);
+                if (alternateAbility != null) {
+                    selectedAbilities.add(alternateAbility);
+                }
+            }
+        } else {
+            if (probability < 50) {
+                Ability alternateAbility = getRandomAlternateAbility(ability);
+                if (alternateAbility != null) {
+                    selectedAbilities.add(alternateAbility);
+                }
+            }
+        }
+    }
+
+    private Ability getRandomAlternateAbility(Ability selectedAbility) {
+        // Get a random alternate ability that is not the selected one
+        ArrayList<Ability> alternateAbilities = new ArrayList<>(abilities);
+        alternateAbilities.remove(selectedAbility);
+        if (!alternateAbilities.isEmpty()) {
+            Random random = new Random();
+            return alternateAbilities.get(random.nextInt(alternateAbilities.size()));
+        }
+        return null;
     }
 }

@@ -15,25 +15,19 @@
             app:destination="@id/pokemonDetailFragment" />
     </fragment>
 
-
     <fragment
         android:id="@+id/pokemonDetailFragment"
         android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.PokemonFragment"
         android:label="pokemon"
         tools:layout="@layout/fragment_pokemon_detail" />
-
     <fragment
         android:id="@+id/navigation_trainer"
         android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.TrainerFragment"
         android:label="Trainer"
         tools:layout="@layout/fragment_trainer"/>
-
-
-
     <fragment
         android:id="@+id/navigation_store"
         android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.StoreFragment"
         android:label="Store"
         tools:layout="@layout/fragment_store" />
-
 </navigation>

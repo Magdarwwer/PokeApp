@@ -3,14 +3,12 @@
         android:id="@+id/navigation_pokedex"
         android:title="Pokedex"
         android:textColor="@color/red"
-        android:icon="@mipmap/mag_glass"/>
-
+        android:icon="@mipmap/search"/>
     <item
         android:id="@+id/navigation_trainer"
         android:title="Trainer"
         android:textColor="@color/red"
-        android:icon="@mipmap/game"
-        />
+        android:icon="@mipmap/game" />
     <item
         android:id="@+id/navigation_store"
         android:title="Store"

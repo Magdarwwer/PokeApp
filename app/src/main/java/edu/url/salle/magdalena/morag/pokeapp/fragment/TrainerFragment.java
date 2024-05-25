@@ -34,11 +34,11 @@ public class TrainerFragment extends Fragment {
     private View root;
     private FileHandler fileHandler;
     private SharedPreferences sharedPreferences;
-    private PokemonDetailActivity pokemonDetailActivity;
 
-    public void setPokemonDetailActivity(PokemonDetailActivity pokemonDetailActivity) {
-        this.pokemonDetailActivity = pokemonDetailActivity;
+    public TrainerFragment(Trainer currentTrainer, PokemonDetailActivity pokemonDetailActivity) {
+        this.currentTrainer = currentTrainer;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,10 +57,10 @@ public class TrainerFragment extends Fragment {
         Button searchButton = root.findViewById(R.id.buttonSearch);
         searchButton.setOnClickListener(v -> showSearchDialog());
 
-        Button releaseButton = root.findViewById(R.id.buttonReleasePokemon);
+       /* Button releaseButton = root.findViewById(R.id.buttonReleasePokemon);
         releaseButton.setOnClickListener(v -> {
             if (currentTrainer != null) {
-                Pokemon pokemonToRelease = pokemonDetailActivity.getCurrentPokemonToInteract();
+                Pokemon pokemonToRelease = getCurrentPokemonToInteract();
                 if (pokemonToRelease != null) {
                     releasePokemon(pokemonToRelease);
                     Toast.makeText(requireContext(), "Pokemon selected to release " + pokemonToRelease.getName(), Toast.LENGTH_SHORT).show();
@@ -68,7 +68,7 @@ public class TrainerFragment extends Fragment {
                     Toast.makeText(requireContext(), "No Pokemon selected to release", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
 
         // Check if there is a searched trainer saved in SharedPreferences
         if (sharedPreferences.contains("searched_trainer_id")) {
