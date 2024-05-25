@@ -1,10 +1,11 @@
 package edu.url.salle.magdalena.morag.pokeapp.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Pokemon implements Serializable {
+import java.util.ArrayList;
+
+public class Pokemon implements Parcelable {
     private int id;
     private String name;
     private String pokemonUrl;
@@ -16,10 +17,11 @@ public class Pokemon implements Serializable {
     private ArrayList<String> abilitiesList;
     private ArrayList<String> statsList;
 
-    public Pokemon(int id, String name, String front_default, String back_default, int height, int weight,
+    public Pokemon(int id, String name, String pokemonUrl, String front_default, String back_default, int height, int weight,
                    ArrayList<String> typesList, ArrayList<String> abilitiesList, ArrayList<String> statsList) {
         this.id = id;
         this.name = name;
+        this.pokemonUrl = pokemonUrl;
         this.front_default = front_default;
         this.back_default = back_default;
         this.height = height;
@@ -28,6 +30,31 @@ public class Pokemon implements Serializable {
         this.abilitiesList = abilitiesList;
         this.statsList = statsList;
     }
+
+    protected Pokemon(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        pokemonUrl = in.readString();
+        front_default = in.readString();
+        back_default = in.readString();
+        height = in.readInt();
+        weight = in.readInt();
+        typesList = in.createStringArrayList();
+        abilitiesList = in.createStringArrayList();
+        statsList = in.createStringArrayList();
+    }
+
+    public static final Creator<Pokemon> CREATOR = new Creator<Pokemon>() {
+        @Override
+        public Pokemon createFromParcel(Parcel in) {
+            return new Pokemon(in);
+        }
+
+        @Override
+        public Pokemon[] newArray(int size) {
+            return new Pokemon[size];
+        }
+    };
 
     public Pokemon(int pokemonId, String pokemonName) {
         this.id = pokemonId;
@@ -114,5 +141,22 @@ public class Pokemon implements Serializable {
         this.statsList = statsList;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(pokemonUrl);
+        dest.writeString(front_default);
+        dest.writeString(back_default);
+        dest.writeInt(height);
+        dest.writeInt(weight);
+        dest.writeStringList(typesList);
+        dest.writeStringList(abilitiesList);
+        dest.writeStringList(statsList);
+    }
 }

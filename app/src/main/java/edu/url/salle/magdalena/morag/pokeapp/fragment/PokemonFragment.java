@@ -27,13 +27,16 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 import edu.url.salle.magdalena.morag.pokeapp.PokemonDetailActivity;
 import edu.url.salle.magdalena.morag.pokeapp.R;
-import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonDetailAdapter;
+import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonAdapter;
+
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 
-public class PokemonFragment extends Fragment implements PokemonDetailAdapter.OnPokemonClickListener {
+public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemonClickListener {
 
     private RecyclerView recyclerView;
-    private PokemonDetailAdapter adapter;
+    private ArrayList<Pokemon> fullPokemonList;
+
+    private PokemonAdapter adapter;
     private ArrayList<Pokemon> pokemonList;
     private static final String BASE_URL = "https://pokeapi.co/api/v2/";
 
@@ -41,13 +44,12 @@ public class PokemonFragment extends Fragment implements PokemonDetailAdapter.On
         View root = inflater.inflate(R.layout.fragment_pokedex, container, false);
         recyclerView = root.findViewById(R.id.recyclerView);
         pokemonList = new ArrayList<>();
-        adapter = new PokemonDetailAdapter(requireContext(), pokemonList);
+        adapter = new PokemonAdapter(requireContext());
         adapter.setOnPokemonClickListener(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         fetchData();
-
         EditText editTextSearch = root.findViewById(R.id.editTextSearch);
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -72,7 +74,7 @@ public class PokemonFragment extends Fragment implements PokemonDetailAdapter.On
 
     private void searchPokemon(String searchText) {
         ArrayList<Pokemon> filteredPokemonList = new ArrayList<>();
-        for (Pokemon pokemon : pokemonList) {
+        for (Pokemon pokemon : fullPokemonList) {
             if (pokemon.getName().toLowerCase().contains(searchText.toLowerCase())) {
                 filteredPokemonList.add(pokemon);
             }
@@ -98,11 +100,14 @@ public class PokemonFragment extends Fragment implements PokemonDetailAdapter.On
 
                         fetchPokemonDetails(pokemon, BASE_URL + "pokemon/" + pokemonName);
                     }
-                    adapter.addPokemonList(fetchedPokemonList);
+
+                    fullPokemonList = fetchedPokemonList;
+                    adapter.addPokemonList(fullPokemonList);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
@@ -188,7 +193,7 @@ public class PokemonFragment extends Fragment implements PokemonDetailAdapter.On
     }
 
     @Override
-    public void onPokemonClick(Pokemon pokemon, String pokemonName) {
+    public void onPokemonClick(Pokemon pokemon, String pokemonName, ArrayList<Pokemon> fullPokemonList) {
         Intent intent = new Intent(requireContext(), PokemonDetailActivity.class);
         intent.putExtra("pokemon", pokemon);
         intent.putExtra("name", pokemon.getName());
@@ -196,6 +201,14 @@ public class PokemonFragment extends Fragment implements PokemonDetailAdapter.On
         intent.putExtra("weight", pokemon.getWeight());
         intent.putExtra("front_default", pokemon.getFront_default());
         intent.putExtra("back_default", pokemon.getBack_default());
+
+        if (fullPokemonList != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("fullPokemonList", fullPokemonList);
+            intent.putExtras(bundle);
+        }
+
         startActivity(intent);
     }
+
 }

@@ -14,13 +14,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 
 public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHolder> {
 
-    private ArrayList<Pokemon> dataset;
+    private List<Pokemon> dataset;
     private Context context;
     private OnPokemonClickListener listener;
 
@@ -30,8 +31,9 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     }
 
     public interface OnPokemonClickListener {
-        void onPokemonClick(Pokemon pokemon, String pokemonName);
+        void onPokemonClick(Pokemon pokemon, String pokemonName, ArrayList<Pokemon> fullPokemonList);
     }
+
 
     public void setOnPokemonClickListener(OnPokemonClickListener listener) {
         this.listener = listener;
@@ -41,10 +43,8 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pokemon_detail, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
@@ -63,17 +63,12 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         return dataset.size();
     }
 
-    public void addPokemonList(ArrayList<Pokemon> pokemonList) {
+    public void addPokemonList(List<Pokemon> pokemonList) {
         dataset.addAll(pokemonList);
         notifyDataSetChanged();
     }
 
-
-    public ArrayList<Pokemon> getDataset() {
-        return dataset;
-    }
-
-    public void filterList(ArrayList<Pokemon> filteredPokemonList) {
+    public void filterList(List<Pokemon> filteredPokemonList) {
         dataset.clear();
         dataset.addAll(filteredPokemonList);
         notifyDataSetChanged();
@@ -90,16 +85,16 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
             nameTextView = itemView.findViewById(R.id.nameTextView);
             itemView.setOnClickListener(this);
         }
+
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION && listener != null) {
                 Pokemon clickedPokemon = dataset.get(position);
                 String pokemonName = clickedPokemon.getName();
-                listener.onPokemonClick(clickedPokemon, pokemonName);
+                listener.onPokemonClick(clickedPokemon, pokemonName, new ArrayList<>(dataset));
             }
         }
-
 
     }
 }

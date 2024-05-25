@@ -5,23 +5,17 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
-
-import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonDetailAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 
 
 public class PokemonDetailActivity extends AppCompatActivity {
 
-    /*private TextView nameTextView;
+    private TextView nameTextView;
     private ImageView frontImageView;
     private ImageView backImageView;
     private TextView heightTextView;
@@ -39,25 +33,39 @@ public class PokemonDetailActivity extends AppCompatActivity {
         weightTextView = findViewById(R.id.textViewWeight);
 
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("pokemon")) {
+        if (intent != null && intent.hasExtra("pokemon") && intent.hasExtra("fullPokemonList")) {
             Pokemon pokemon = intent.getParcelableExtra("pokemon");
-            if (pokemon != null) {
-                nameTextView.setText(pokemon.getName());
-                heightTextView.setText(pokemon.getHeight());
-                weightTextView.setText(pokemon.getWeight());
+            Bundle bundle = intent.getExtras();
+            if (pokemon != null && bundle != null) {
+                ArrayList<Pokemon> fullPokemonList = (ArrayList<Pokemon>) bundle.getSerializable("fullPokemonList");
+                if (fullPokemonList != null) {
+                    Pokemon selectedPokemon = null;
+                    for (Pokemon p : fullPokemonList) {
+                        if (p.getId() == pokemon.getId()) {
+                            selectedPokemon = p;
+                            break;
+                        }
+                    }
 
-                Glide.with(this)
-                        .load(pokemon.getFront_default())
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(frontImageView);
+                    if (selectedPokemon != null) {
+                        nameTextView.setText(selectedPokemon.getName().toUpperCase());
+                        heightTextView.setText("Height: " + selectedPokemon.getHeight());
+                        weightTextView.setText("Weight: " + selectedPokemon.getWeight());
 
-                Glide.with(this)
-                        .load(pokemon.getBack_default())
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(backImageView);
+                        Glide.with(this)
+                                .load(selectedPokemon.getFront_default())
+                                .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(frontImageView);
+
+                        Glide.with(this)
+                                .load(selectedPokemon.getBack_default())
+                                .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(backImageView);
+                    }
+                }
             }
         }
-    }*/
+    }
 }
