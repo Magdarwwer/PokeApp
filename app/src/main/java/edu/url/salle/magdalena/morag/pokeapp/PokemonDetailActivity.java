@@ -36,6 +36,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
     private StatAdapter statAdapter;
     private TypeAdapter typeAdapter;
     private TextView nameTextView;
+
     private ImageView frontImageView;
     private ImageView backImageView;
     private TextView heightTextView;
