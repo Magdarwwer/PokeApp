@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="bottom">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textViewStat"
@@ -11,6 +10,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:textColor="@android:color/black"
-        android:text="Stat Name: Base Stat" />
+        android:text="Stat Name" />
+
 
 </LinearLayout>

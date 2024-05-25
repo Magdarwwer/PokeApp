@@ -46,9 +46,9 @@ public class TrainerFragment extends Fragment {
         List<String> brockItems = Arrays.asList("Potion", "Max Potion", "Master Ball");
 
         trainers = new ArrayList<>();
-        Trainer ash = new Trainer("Ash", 1000, new ArrayList<>(), new ArrayList<>());
-        Trainer misty = new Trainer("Misty", 1500, new ArrayList<>(), new ArrayList<>());
-        Trainer brock = new Trainer("Brock", 1200, new ArrayList<>(), new ArrayList<>());
+        Trainer ash = new Trainer(1, "Ash", 1000, new ArrayList<>(), new ArrayList<>());
+        Trainer misty = new Trainer(2, "Misty", 1500, new ArrayList<>(), new ArrayList<>());
+        Trainer brock = new Trainer(3, "Brock", 1200, new ArrayList<>(), new ArrayList<>());
 
         trainers.add(ash);
         trainers.add(misty);

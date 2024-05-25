@@ -11,15 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
+import edu.url.salle.magdalena.morag.pokeapp.model.Ability;
 
 public class AbilityAdapter extends RecyclerView.Adapter<AbilityAdapter.ViewHolder> {
 
-    private ArrayList<String> abilities;
+    private ArrayList<Ability> abilities;
 
-    public AbilityAdapter(ArrayList<String> abilities) {
-        this.abilities = abilities;
-    }
     public AbilityAdapter() {
+        this.abilities = new ArrayList<>();
     }
 
     @NonNull
@@ -31,8 +30,8 @@ public class AbilityAdapter extends RecyclerView.Adapter<AbilityAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String ability = abilities.get(position);
-        holder.textViewAbility.setText(ability);
+        Ability ability = abilities.get(position);
+        holder.textViewAbility.setText(ability.getName());
     }
 
     @Override
@@ -50,11 +49,11 @@ public class AbilityAdapter extends RecyclerView.Adapter<AbilityAdapter.ViewHold
         }
     }
 
-    public ArrayList<String> getAbilities() {
+    public ArrayList<Ability> getAbilities() {
         return abilities;
     }
 
-    public void setAbilities(ArrayList<String> abilities) {
+    public void setAbilities(ArrayList<Ability> abilities) {
         this.abilities = abilities;
     }
 }

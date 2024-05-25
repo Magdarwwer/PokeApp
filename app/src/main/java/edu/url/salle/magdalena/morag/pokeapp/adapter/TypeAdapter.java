@@ -11,16 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
+import edu.url.salle.magdalena.morag.pokeapp.model.Type;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
-    private ArrayList<String> types;
+    private ArrayList<Type> types;
 
-    public TypeAdapter(ArrayList<String> types) {
+    public TypeAdapter(ArrayList<Type> types) {
         this.types = types;
     }
-    public TypeAdapter() {
 
+    public TypeAdapter() {
+        this.types = new ArrayList<>();
     }
 
     @NonNull
@@ -32,8 +34,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String type = types.get(position);
-        holder.textViewType.setText(type);
+        Type type = types.get(position);
+        holder.textViewType.setText(type.getName());
     }
 
     @Override
@@ -51,11 +53,11 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         }
     }
 
-    public ArrayList<String> getTypes() {
+    public ArrayList<Type> getTypes() {
         return types;
     }
 
-    public void setTypes(ArrayList<String> types) {
+    public void setTypes(ArrayList<Type> types) {
         this.types = types;
     }
 }

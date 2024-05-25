@@ -29,7 +29,10 @@ import edu.url.salle.magdalena.morag.pokeapp.PokemonDetailActivity;
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonAdapter;
 
+import edu.url.salle.magdalena.morag.pokeapp.model.Ability;
+import edu.url.salle.magdalena.morag.pokeapp.model.Type;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
+import edu.url.salle.magdalena.morag.pokeapp.model.Stat;
 
 public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemonClickListener {
 
@@ -133,30 +136,34 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
 
                     // Fetching types
                     JSONArray typesArray = response.getJSONArray("types");
-                    ArrayList<String> typesList = new ArrayList<>();
+                    ArrayList<Type> typesList = new ArrayList<>();
                     for (int i = 0; i < typesArray.length(); i++) {
                         JSONObject typeObject = typesArray.getJSONObject(i);
-                        String typeName = typeObject.getJSONObject("type").getString("name");
-                        typesList.add(typeName);
+                        JSONObject typeData = typeObject.getJSONObject("type");
+                        String typeName = typeData.getString("name");
+                        Type type = new Type(typeName);
+                        typesList.add(type);
                     }
 
-                    // Fetching abilities
                     JSONArray abilitiesArray = response.getJSONArray("abilities");
-                    ArrayList<String> abilitiesList = new ArrayList<>();
+                    ArrayList<Ability> abilitiesList = new ArrayList<>();
                     for (int i = 0; i < abilitiesArray.length(); i++) {
                         JSONObject abilityObject = abilitiesArray.getJSONObject(i);
-                        String abilityName = abilityObject.getJSONObject("ability").getString("name");
-                        abilitiesList.add(abilityName);
+                        JSONObject abilityData = abilityObject.getJSONObject("ability");
+                        String abilityName = abilityData.getString("name");
+                        Ability ability = new Ability(abilityName);
+                        abilitiesList.add(ability);
                     }
 
-                    // Fetching stats
                     JSONArray statsArray = response.getJSONArray("stats");
-                    ArrayList<String> statsList = new ArrayList<>();
+                    ArrayList<Stat> statsList = new ArrayList<>();
                     for (int i = 0; i < statsArray.length(); i++) {
                         JSONObject statObject = statsArray.getJSONObject(i);
-                        String statName = statObject.getJSONObject("stat").getString("name");
+                        JSONObject statData = statObject.getJSONObject("stat");
+                        String statName = statData.getString("name");
                         int baseStat = statObject.getInt("base_stat");
-                        statsList.add(statName + ": " + baseStat);
+                        Stat stat = new Stat(statName, baseStat);
+                        statsList.add(stat);
                     }
 
                     pokemon.setName(name);
@@ -201,6 +208,9 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         intent.putExtra("weight", pokemon.getWeight());
         intent.putExtra("front_default", pokemon.getFront_default());
         intent.putExtra("back_default", pokemon.getBack_default());
+        intent.putExtra("typesList", pokemon.getTypesList());
+        intent.putExtra("abilitiesList", pokemon.getAbilitiesList());
+        intent.putExtra("statsList", pokemon.getStatsList());
 
         if (fullPokemonList != null) {
             Bundle bundle = new Bundle();

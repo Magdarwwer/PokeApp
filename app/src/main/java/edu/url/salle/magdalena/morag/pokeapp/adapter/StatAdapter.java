@@ -11,33 +11,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
+import edu.url.salle.magdalena.morag.pokeapp.model.Stat;
+
 
 public class StatAdapter extends RecyclerView.Adapter<StatAdapter.ViewHolder> {
 
-    private ArrayList<String> stats;
+    private ArrayList<Stat> stats;
 
-
-    public StatAdapter(ArrayList<String> stats) {
-        if (stats == null) {
-            this.stats = new ArrayList<>();
-        } else {
-            this.stats = stats;
-        }
+    public StatAdapter(ArrayList<Stat> stats) {
+        this.stats = stats;
     }
+
     public StatAdapter() {
+        this.stats = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pokemon_detail, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stats, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String stat = stats.get(position);
-        holder.textViewStat.setText(stat);
+        Stat stat = stats.get(position);
+        holder.textViewStat.setText(stat.getName() + ": " + stat.getBaseStat());
     }
 
     @Override
@@ -55,11 +54,11 @@ public class StatAdapter extends RecyclerView.Adapter<StatAdapter.ViewHolder> {
         }
     }
 
-    public ArrayList<String> getStats() {
+    public ArrayList<Stat> getStats() {
         return stats;
     }
 
-    public void setStats(ArrayList<String> stats) {
+    public void setStats(ArrayList<Stat> stats) {
         this.stats = stats;
     }
 }

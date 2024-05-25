@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Pokemon implements Parcelable {
     private int id;
@@ -13,12 +14,13 @@ public class Pokemon implements Parcelable {
     private String back_default;
     private int height;
     private int weight;
-    private ArrayList<String> typesList;
-    private ArrayList<String> abilitiesList;
-    private ArrayList<String> statsList;
+    private ArrayList<Type> typesList;
+    private ArrayList<Ability> abilitiesList;
+    private ArrayList<Stat> statsList;
+    private boolean isCaught;
 
     public Pokemon(int id, String name, String pokemonUrl, String front_default, String back_default, int height, int weight,
-                   ArrayList<String> typesList, ArrayList<String> abilitiesList, ArrayList<String> statsList) {
+                   ArrayList<Type> typesList, ArrayList<Ability> abilitiesList, ArrayList<Stat> statsList) {
         this.id = id;
         this.name = name;
         this.pokemonUrl = pokemonUrl;
@@ -39,9 +41,9 @@ public class Pokemon implements Parcelable {
         back_default = in.readString();
         height = in.readInt();
         weight = in.readInt();
-        typesList = in.createStringArrayList();
-        abilitiesList = in.createStringArrayList();
-        statsList = in.createStringArrayList();
+        typesList = in.createTypedArrayList(Type.CREATOR);
+        abilitiesList = in.createTypedArrayList(Ability.CREATOR);
+        statsList = in.createTypedArrayList(Stat.CREATOR);
     }
 
     public static final Creator<Pokemon> CREATOR = new Creator<Pokemon>() {
@@ -93,15 +95,15 @@ public class Pokemon implements Parcelable {
         return weight;
     }
 
-    public ArrayList<String> getTypesList() {
+    public ArrayList<Type> getTypesList() {
         return typesList;
     }
 
-    public ArrayList<String> getAbilitiesList() {
+    public ArrayList<Ability> getAbilitiesList() {
         return abilitiesList;
     }
 
-    public ArrayList<String> getStatsList() {
+    public ArrayList<Stat> getStatsList() {
         return statsList;
     }
 
@@ -129,16 +131,40 @@ public class Pokemon implements Parcelable {
         this.weight = weight;
     }
 
-    public void setTypesList(ArrayList<String> typesList) {
+    public void setTypesList(ArrayList<Type> typesList) {
         this.typesList = typesList;
     }
 
-    public void setAbilitiesList(ArrayList<String> abilitiesList) {
+    public void setAbilitiesList(ArrayList<Ability> abilitiesList) {
         this.abilitiesList = abilitiesList;
     }
 
-    public void setStatsList(ArrayList<String> statsList) {
+    public void setStatsList(ArrayList<Stat> statsList) {
         this.statsList = statsList;
+    }
+
+    public boolean isCaught() {
+        return isCaught;
+    }
+
+    public void setCaught(boolean caught) {
+        isCaught = caught;
+    }
+
+    public int getType() {
+        Random random = new Random();
+        switch (random.nextInt(4)) {
+            case 0:
+                return random.nextInt(61) + 20;
+            case 1:
+                return random.nextInt(121) + 80;
+            case 2:
+                return random.nextInt(151) + 200;
+            case 3:
+                return random.nextInt(151) + 350;
+            default:
+                return 0;
+        }
     }
 
     @Override
@@ -155,8 +181,8 @@ public class Pokemon implements Parcelable {
         dest.writeString(back_default);
         dest.writeInt(height);
         dest.writeInt(weight);
-        dest.writeStringList(typesList);
-        dest.writeStringList(abilitiesList);
-        dest.writeStringList(statsList);
+        dest.writeTypedList(typesList);
+        dest.writeTypedList(abilitiesList);
+        dest.writeTypedList(statsList);
     }
 }
