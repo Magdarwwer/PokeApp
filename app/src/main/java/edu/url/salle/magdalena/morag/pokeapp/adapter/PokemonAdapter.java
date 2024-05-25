@@ -29,12 +29,8 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         dataset = new ArrayList<>();
     }
 
-    public PokemonAdapter() {
-        dataset = new ArrayList<>();
-    }
-
     public interface OnPokemonClickListener {
-        void onPokemonClick(Pokemon pokemon);
+        void onPokemonClick(Pokemon pokemon, String pokemonName);
     }
 
     public void setOnPokemonClickListener(OnPokemonClickListener listener) {
@@ -44,7 +40,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pokemon_detail, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -72,6 +68,11 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+
+    public ArrayList<Pokemon> getDataset() {
+        return dataset;
+    }
+
     public void filterList(ArrayList<Pokemon> filteredPokemonList) {
         dataset.clear();
         dataset.addAll(filteredPokemonList);
@@ -94,8 +95,11 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION && listener != null) {
                 Pokemon clickedPokemon = dataset.get(position);
-                listener.onPokemonClick(clickedPokemon);
+                String pokemonName = clickedPokemon.getName();
+                listener.onPokemonClick(clickedPokemon, pokemonName);
             }
         }
+
+
     }
 }

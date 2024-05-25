@@ -6,14 +6,15 @@
     app:startDestination="@id/navigation_pokedex">
 
     <fragment
-    android:id="@+id/navigation_pokedex"
-    android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.PokemonFragment"
-    android:label="Pokedex"
-    tools:layout="@layout/fragment_pokedex">
-    <action
-        android:id="@+id/fragment_pokemon_detail"
-        app:destination="@id/pokemonDetailFragment" />
+        android:id="@+id/navigation_pokedex"
+        android:name="edu.url.salle.magdalena.morag.pokeapp.fragment.PokemonFragment"
+        android:label="Pokedex"
+        tools:layout="@layout/fragment_pokedex">
+        <action
+            android:id="@+id/action_navigation_pokedex_to_pokemonDetailFragment"
+            app:destination="@id/pokemonDetailFragment" />
     </fragment>
+
 
     <fragment
         android:id="@+id/pokemonDetailFragment"

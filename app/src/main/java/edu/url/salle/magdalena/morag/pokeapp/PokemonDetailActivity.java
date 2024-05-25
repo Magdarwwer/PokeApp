@@ -1,69 +1,63 @@
 package edu.url.salle.magdalena.morag.pokeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.util.ArrayList;
+
+import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonDetailAdapter;
+import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
+
+
 public class PokemonDetailActivity extends AppCompatActivity {
 
+    /*private TextView nameTextView;
+    private ImageView frontImageView;
+    private ImageView backImageView;
+    private TextView heightTextView;
+    private TextView weightTextView;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_pokemon_detail);
 
-        // Getting data from intent
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String name = extras.getString("name");
-            String frontImage = extras.getString("frontImage");
-            String backImage = extras.getString("backImage");
-            int height = extras.getInt("height");
-            int weight = extras.getInt("weight");
-            String types = extras.getString("types");
-            String abilities = extras.getString("abilities");
-            String stats = extras.getString("stats");
+        nameTextView = findViewById(R.id.textViewNameDetail);
+        frontImageView = findViewById(R.id.imageViewFrontDetail);
+        backImageView = findViewById(R.id.imageViewBackDetail);
+        heightTextView = findViewById(R.id.textViewHeight);
+        weightTextView = findViewById(R.id.textViewWeight);
 
-            // Setting data to views
-            TextView textViewNameDetail = findViewById(R.id.textViewNameDetail);
-            textViewNameDetail.setText(name);
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("pokemon")) {
+            Pokemon pokemon = intent.getParcelableExtra("pokemon");
+            if (pokemon != null) {
+                nameTextView.setText(pokemon.getName());
+                heightTextView.setText(pokemon.getHeight());
+                weightTextView.setText(pokemon.getWeight());
 
-            TextView textViewHeight = findViewById(R.id.textViewHeight);
-            textViewHeight.setText("Height: " + height);
+                Glide.with(this)
+                        .load(pokemon.getFront_default())
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(frontImageView);
 
-            TextView textViewWeight = findViewById(R.id.textViewWeight);
-            textViewWeight.setText("Weight: " + weight);
-
-            ImageView imageViewFrontDetail = findViewById(R.id.imageViewFrontDetail);
-            Glide.with(this)
-                    .load(frontImage)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageViewFrontDetail);
-
-            ImageView imageViewBackDetail = findViewById(R.id.imageViewBackDetail);
-            Glide.with(this)
-                    .load(backImage)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageViewBackDetail);
-
-            TextView textViewTypesDetail = findViewById(R.id.textViewTypesDetail);
-            textViewTypesDetail.setText("Types: " + types);
-
-            TextView textViewDescriptionDetail = findViewById(R.id.textViewDescriptionDetail);
-            textViewDescriptionDetail.setText("Description: ");
-
-            TextView textViewAbilityDetail = findViewById(R.id.textViewAbilityDetail);
-            textViewAbilityDetail.setText("Ability: " + abilities);
-
-            TextView textViewStatsDetail = findViewById(R.id.textViewStatsDetail);
-            textViewStatsDetail.setText("Stats: " + stats);
+                Glide.with(this)
+                        .load(pokemon.getBack_default())
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(backImageView);
+            }
         }
-    }
+    }*/
 }

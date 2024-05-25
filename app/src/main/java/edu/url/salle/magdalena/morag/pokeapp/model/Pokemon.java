@@ -12,12 +12,12 @@ public class Pokemon implements Serializable {
     private String back_default;
     private int height;
     private int weight;
-    private List<String> typesList;
-    private List<String> abilitiesList;
-    private List<String> statsList;
+    private ArrayList<String> typesList;
+    private ArrayList<String> abilitiesList;
+    private ArrayList<String> statsList;
 
     public Pokemon(int id, String name, String front_default, String back_default, int height, int weight,
-                   List<String> typesList, List<String> abilitiesList, List<String> statsList) {
+                   ArrayList<String> typesList, ArrayList<String> abilitiesList, ArrayList<String> statsList) {
         this.id = id;
         this.name = name;
         this.front_default = front_default;
@@ -29,11 +29,9 @@ public class Pokemon implements Serializable {
         this.statsList = statsList;
     }
 
-    public Pokemon(int pokemonId, String pokemonName, String frontDefault, String pokemonUrl) {
+    public Pokemon(int pokemonId, String pokemonName) {
         this.id = pokemonId;
         this.name = pokemonName;
-        this.front_default = frontDefault;
-        this.pokemonUrl = pokemonUrl;
     }
 
     public String getPokemonUrl() {
@@ -68,15 +66,15 @@ public class Pokemon implements Serializable {
         return weight;
     }
 
-    public List<String> getTypesList() {
+    public ArrayList<String> getTypesList() {
         return typesList;
     }
 
-    public List<String> getAbilitiesList() {
+    public ArrayList<String> getAbilitiesList() {
         return abilitiesList;
     }
 
-    public List<String> getStatsList() {
+    public ArrayList<String> getStatsList() {
         return statsList;
     }
 
@@ -104,15 +102,17 @@ public class Pokemon implements Serializable {
         this.weight = weight;
     }
 
-    public void setTypesList(List<String> typesList) {
+    public void setTypesList(ArrayList<String> typesList) {
         this.typesList = typesList;
     }
 
-    public void setAbilitiesList(List<String> abilitiesList) {
+    public void setAbilitiesList(ArrayList<String> abilitiesList) {
         this.abilitiesList = abilitiesList;
     }
 
-    public void setStatsList(List<String> statsList) {
+    public void setStatsList(ArrayList<String> statsList) {
         this.statsList = statsList;
     }
+
+
 }

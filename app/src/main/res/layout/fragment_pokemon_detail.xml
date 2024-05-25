@@ -4,18 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <TextView
         android:id="@+id/textViewNameDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="164dp"
-        android:layout_marginTop="120dp"
         android:text="Name"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
     <TextView
         android:id="@+id/textViewHeight"
@@ -23,7 +22,8 @@
         android:layout_height="wrap_content"
         android:text="Height"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewNameDetail" />
+        app:layout_constraintTop_toBottomOf="@id/textViewNameDetail"
+        android:layout_marginTop="8dp"/>
 
     <TextView
         android:id="@+id/textViewWeight"
@@ -31,58 +31,80 @@
         android:layout_height="wrap_content"
         android:text="Weight"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewHeight" />
+        app:layout_constraintTop_toBottomOf="@id/textViewHeight"
+        android:layout_marginTop="8dp"/>
 
     <ImageView
         android:id="@+id/imageViewFrontDetail"
         android:layout_width="133dp"
         android:layout_height="133dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="20dp"
         android:text="FrontPic"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewWeight" />
+        app:layout_constraintTop_toBottomOf="@id/textViewWeight"
+        android:layout_marginTop="16dp"/>
 
     <ImageView
         android:id="@+id/imageViewBackDetail"
         android:layout_width="133dp"
         android:layout_height="133dp"
         android:text="BackPic"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/imageViewFrontDetail"
-        app:layout_constraintTop_toTopOf="@id/imageViewFrontDetail"
-        app:layout_constraintDimensionRatio="1:1" />
+        app:layout_constraintTop_toTopOf="@id/imageViewFrontDetail"/>
 
     <TextView
-        android:id="@+id/textViewTypesDetail"
+        android:id="@+id/textViewType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Types"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageViewFrontDetail" />
+        app:layout_constraintTop_toBottomOf="@id/imageViewFrontDetail"
+        android:layout_marginTop="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTypes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/textViewType"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 
     <TextView
-        android:id="@+id/textViewDescriptionDetail"
+        android:id="@+id/textViewAbility"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description"
+        android:text="Abilities"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTypesDetail" />
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewTypes"
+        android:layout_marginTop="16dp"/>
 
-    <TextView
-        android:id="@+id/textViewAbilityDetail"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewAbilities"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Ability"
+        app:layout_constraintTop_toBottomOf="@id/textViewAbility"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewDescriptionDetail" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 
     <TextView
-        android:id="@+id/textViewStatsDetail"
+        android:id="@+id/textViewStat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stats"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewAbilityDetail" />
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewAbilities"
+        android:layout_marginTop="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewStats"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/textViewStat"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

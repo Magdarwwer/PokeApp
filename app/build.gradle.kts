@@ -49,6 +49,4 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.loopj.android:android-async-http:1.4.9")
 
-
-
 }
