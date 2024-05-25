@@ -1,6 +1,8 @@
 package edu.url.salle.magdalena.morag.pokeapp.fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -14,12 +16,11 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
+import edu.url.salle.magdalena.morag.pokeapp.util.FileHandler;
 
 public class TrainerFragment extends Fragment {
 
@@ -30,6 +31,8 @@ public class TrainerFragment extends Fragment {
     private List<Trainer> trainers;
     private Trainer currentTrainer;
     private View root;
+    private FileHandler fileHandler;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,35 +41,11 @@ public class TrainerFragment extends Fragment {
         textViewTrainerMoney = root.findViewById(R.id.textViewTrainerMoney);
         textViewItems = root.findViewById(R.id.textViewItems);
         textViewCapturedPokemons = root.findViewById(R.id.textViewCapturedPokemons);
+        fileHandler = new FileHandler(requireContext());
+        sharedPreferences = requireContext().getSharedPreferences("TrainerPrefs", Context.MODE_PRIVATE);
 
-        // Define items for trainers
-        List<String> ashItems = Arrays.asList("Potion", "Revive", "Great Ball");
-        List<String> mistyItems = Arrays.asList("Potion", "Super Potion", "Ultra Ball");
-        List<String> brockItems = Arrays.asList("Potion", "Max Potion", "Master Ball");
-
-        // Create trainers
-        trainers = new ArrayList<>();
-        Trainer ash = new Trainer(1, "Ash", 1000, new ArrayList<>(), new ArrayList<>());
-        Trainer misty = new Trainer(2, "Misty", 1500, new ArrayList<>(), new ArrayList<>());
-        Trainer brock = new Trainer(3, "Brock", 1200, new ArrayList<>(), new ArrayList<>());
-
-        // Add trainers to the list
-        trainers.add(ash);
-        trainers.add(misty);
-        trainers.add(brock);
-
-        // Define items list for each trainer
-        List<List<String>> items = new ArrayList<>();
-        items.add(ashItems);
-        items.add(mistyItems);
-        items.add(brockItems);
-
-        // Assign items to trainers
-        for (int i = 0; i < trainers.size(); i++) {
-            Trainer trainer = trainers.get(i);
-            List<String> trainerItems = items.get(i);
-            trainer.getItems().addAll(trainerItems);
-        }
+        // Load trainers from file
+        trainers = fileHandler.loadTrainers();
 
         // Set up buttons
         Button openDialogButton = root.findViewById(R.id.buttonOpenDialog);
@@ -74,6 +53,18 @@ public class TrainerFragment extends Fragment {
 
         Button searchButton = root.findViewById(R.id.buttonSearch);
         searchButton.setOnClickListener(v -> showSearchDialog());
+
+        // Check if there is a searched trainer saved in SharedPreferences
+        if (sharedPreferences.contains("searched_trainer_id")) {
+            int searchedTrainerId = sharedPreferences.getInt("searched_trainer_id", -1);
+            for (Trainer trainer : trainers) {
+                if (trainer.getId() == searchedTrainerId) {
+                    currentTrainer = trainer;
+                    updateTrainerInfo(currentTrainer);
+                    break;
+                }
+            }
+        }
 
         return root;
     }
@@ -88,6 +79,12 @@ public class TrainerFragment extends Fragment {
             if (trainer.getName().equalsIgnoreCase(name)) {
                 currentTrainer = trainer;
                 updateTrainerInfo(currentTrainer);
+
+                // Save searched trainer ID to SharedPreferences
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("searched_trainer_id", currentTrainer.getId());
+                editor.apply();
+
                 return;
             }
         }
@@ -104,8 +101,18 @@ public class TrainerFragment extends Fragment {
         if (currentTrainer != null) {
             currentTrainer.setName(newName);
             updateTrainerInfo(currentTrainer);
+
+            for (int i = 0; i < trainers.size(); i++) {
+                if (trainers.get(i).getId() == currentTrainer.getId()) {
+                    trainers.set(i, currentTrainer);
+                    break;
+                }
+            }
+
+            fileHandler.saveTrainers(trainers);
         }
     }
+
 
     private void showChangeNameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -139,5 +146,27 @@ public class TrainerFragment extends Fragment {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    // Method to handle purchasing a Pokémon
+    private void purchasePokemon(int cost) {
+        if (currentTrainer != null) {
+            if (currentTrainer.getMoney() >= cost) {
+                currentTrainer.setMoney(currentTrainer.getMoney() - cost);
+                updateTrainerInfo(currentTrainer);
+                Toast.makeText(requireContext(), "You purchased a Pokémon", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Insufficient funds", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // Method to handle receiving money
+    private void receiveMoney(int amount) {
+        if (currentTrainer != null) {
+            currentTrainer.setMoney(currentTrainer.getMoney() + amount);
+            updateTrainerInfo(currentTrainer);
+            Toast.makeText(requireContext(), "You received money", Toast.LENGTH_SHORT).show();
+        }
     }
 }

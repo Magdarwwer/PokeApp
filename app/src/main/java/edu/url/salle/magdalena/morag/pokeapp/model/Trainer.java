@@ -72,6 +72,26 @@ public class Trainer {
         this.items = items;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setPokedex(ArrayList<Pokemon> pokedex) {
+        this.pokedex = pokedex;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public void releasePokemon(Pokemon pokemon) {
         if (pokedex.contains(pokemon)) {
             pokemon.setCaught(false);

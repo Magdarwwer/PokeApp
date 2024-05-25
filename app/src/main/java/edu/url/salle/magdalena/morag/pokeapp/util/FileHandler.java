@@ -7,39 +7,43 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
 public class FileHandler {
 
-    private static final String USER_FILE = "user.json.json";
+    private static final String TRAINERS_FILE = "trainers.json";
+    private Context context;
 
-    public static void saveUser(Context context, Trainer user) {
+    public FileHandler(Context context) {
+        this.context = context;
+    }
+
+    public void saveTrainers(List<Trainer> trainers) {
         try {
             Gson gson = new Gson();
-            String json = gson.toJson(user);
-            FileOutputStream fos = context.openFileOutput(USER_FILE, Context.MODE_PRIVATE);
+            String json = gson.toJson(trainers);
+            FileOutputStream fos = context.openFileOutput(TRAINERS_FILE, Context.MODE_PRIVATE);
             fos.write(json.getBytes());
             fos.close();
         } catch (IOException e) {
-            Log.e("FileHandler", "Error saving user.json", e);
+            Log.e("FileHandler", "Error saving trainers", e);
         }
     }
 
-    public static Trainer loadUser(Context context) {
+    public List<Trainer> loadTrainers() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(context.getFilesDir() + "/" + USER_FILE));
-            StringBuilder json = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                json.append(line);
-            }
-            br.close();
+            BufferedReader br = new BufferedReader(new FileReader(context.getFilesDir() + "/" + TRAINERS_FILE));
             Gson gson = new Gson();
-            return gson.fromJson(json.toString(), Trainer.class);
+            Trainer[] trainersArray = gson.fromJson(br, Trainer[].class);
+            br.close();
+            return Arrays.asList(trainersArray);
         } catch (IOException e) {
-            Log.e("FileHandler", "Error loading user.json", e);
+            Log.e("FileHandler", "Error loading trainers", e);
             return null;
         }
     }
+
 }

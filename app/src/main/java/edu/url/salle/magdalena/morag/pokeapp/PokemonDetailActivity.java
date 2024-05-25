@@ -129,19 +129,6 @@ public class PokemonDetailActivity extends AppCompatActivity {
 
     private void showCatchDialog(Pokemon pokemon) {
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-
-        if (!isLoggedIn) {
-            Toast.makeText(this, "You must be logged in to catch a Pokémon.", Toast.LENGTH_SHORT).show();
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivity(loginIntent);
-            return;
-        }
-
-        if (currentTrainer == null) {
-            Toast.makeText(this, "Failed to retrieve trainer data.", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         List<String> items = currentTrainer.getItems();
         String[] pokeballs = items.toArray(new String[0]);
