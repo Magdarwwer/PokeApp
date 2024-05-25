@@ -11,18 +11,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import edu.url.salle.magdalena.morag.pokeapp.PokemonDetailActivity;
 import edu.url.salle.magdalena.morag.pokeapp.R;
+import edu.url.salle.magdalena.morag.pokeapp.adapter.CapturedPokemonAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
-import edu.url.salle.magdalena.morag.pokeapp.util.FileHandler;
+import edu.url.salle.magdalena.morag.pokeapp.util.PokemonSharedPreferences;
 
 public class TrainerFragment extends Fragment {
 
@@ -32,13 +36,17 @@ public class TrainerFragment extends Fragment {
     private ArrayList<Trainer> trainers;
     private Trainer currentTrainer;
     private View root;
-    private FileHandler fileHandler;
     private SharedPreferences sharedPreferences;
+    private RecyclerView recyclerView;
+    private CapturedPokemonAdapter adapter;
 
-    public TrainerFragment(Trainer currentTrainer, PokemonDetailActivity pokemonDetailActivity) {
+    public TrainerFragment(Trainer currentTrainer) {
         this.currentTrainer = currentTrainer;
+        trainers = new ArrayList<>();
     }
-
+    public TrainerFragment() {
+        trainers = new ArrayList<>();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,31 +54,45 @@ public class TrainerFragment extends Fragment {
         textViewTrainerName = root.findViewById(R.id.textViewTrainerName);
         textViewTrainerMoney = root.findViewById(R.id.textViewTrainerMoney);
         textViewItems = root.findViewById(R.id.textViewItems);
-        fileHandler = new FileHandler(requireContext());
+        recyclerView = root.findViewById(R.id.recyclerViewCapturedPokemons);
+
+        Trainer trainer1 = new Trainer(1, "Ash", 1000, new ArrayList<>(), new ArrayList<>());
+        trainer1.getPokedex().add(new Pokemon(25,"Pikachu", true,"Pokeball" ));
+        trainer1.getItems().add("Pokeball");
+        trainers.add(trainer1);
+
+        Trainer trainer2 = new Trainer(2, "Misty", 800, new ArrayList<>(), new ArrayList<>());
+        trainer2.getPokedex().add(new Pokemon(54, "Psyduck", true, "Masterball"));
+        trainer2.getItems().add("Masterball");
+        trainers.add(trainer2);
+
+        Trainer trainer3 = new Trainer(3, "Brock", 1200, new ArrayList<>(), new ArrayList<>());
+        trainer3.getPokedex().add(new Pokemon(74,"Geodude", true, "Superball"));
+        trainer3.getItems().add("Superball");
+        trainers.add(trainer3);
+
         sharedPreferences = requireContext().getSharedPreferences("TrainerPrefs", Context.MODE_PRIVATE);
 
-        trainers = fileHandler.loadTrainers();
 
+        if (currentTrainer != null) {
+            ArrayList<Pokemon> caughtPokemon = PokemonSharedPreferences.loadCaughtPokemon(requireContext(), currentTrainer.getId());
+            if (caughtPokemon != null) {
+                currentTrainer.setPokedex(caughtPokemon);
+            }
+        }
         Button openDialogButton = root.findViewById(R.id.buttonOpenDialog);
         openDialogButton.setOnClickListener(v -> showChangeNameDialog());
 
         Button searchButton = root.findViewById(R.id.buttonSearch);
         searchButton.setOnClickListener(v -> showSearchDialog());
 
-       /* Button releaseButton = root.findViewById(R.id.buttonReleasePokemon);
+        Button releaseButton = root.findViewById(R.id.buttonReleasePokemon);
         releaseButton.setOnClickListener(v -> {
             if (currentTrainer != null) {
-                Pokemon pokemonToRelease = getCurrentPokemonToInteract();
-                if (pokemonToRelease != null) {
-                    releasePokemon(pokemonToRelease);
-                    Toast.makeText(requireContext(), "Pokemon selected to release " + pokemonToRelease.getName(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireContext(), "No Pokemon selected to release", Toast.LENGTH_SHORT).show();
-                }
+                showReleasePokemonDialog();
             }
-        });*/
+        });
 
-        // Check if there is a searched trainer saved in SharedPreferences
         if (sharedPreferences.contains("searched_trainer_id")) {
             int searchedTrainerId = sharedPreferences.getInt("searched_trainer_id", -1);
             for (Trainer trainer : trainers) {
@@ -82,74 +104,17 @@ public class TrainerFragment extends Fragment {
             }
         }
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
+        recyclerView.setLayoutManager(layoutManager);
+        if (currentTrainer != null && currentTrainer.getPokedex() != null) {
+            adapter = new CapturedPokemonAdapter(currentTrainer.getPokedex());
+            recyclerView.setAdapter(adapter);
+        } else {
+            Toast.makeText(requireContext(), "No captured pokemons available", Toast.LENGTH_SHORT).show();
+        }
+
 
         return root;
-    }
-
-    public void performTransaction(int cost, String transactionType, Pokemon pokemonToCapture, String pokeballType) {
-        if (currentTrainer == null) {
-            return;
-        }
-
-        switch (transactionType) {
-            case "capture":
-                if (pokemonToCapture != null) {
-                    currentTrainer.interactWithPokemon(pokemonToCapture, pokeballType);
-                    updateTrainerInfo(currentTrainer);
-                } else {
-                    Toast.makeText(requireContext(), "Invalid transaction parameter", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            default:
-                Toast.makeText(requireContext(), "Invalid transaction type", Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-
-
-    private void searchTrainer(String name) {
-        if (trainers == null || trainers.isEmpty()) {
-            Toast.makeText(requireContext(), "No trainers available", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        for (Trainer trainer : trainers) {
-            if (trainer.getName().equalsIgnoreCase(name)) {
-                currentTrainer = trainer;
-                updateTrainerInfo(currentTrainer);
-
-                // Save searched trainer ID to SharedPreferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("searched_trainer_id", currentTrainer.getId());
-                editor.apply();
-
-                return;
-            }
-        }
-        Toast.makeText(requireContext(), "Trainer not found", Toast.LENGTH_SHORT).show();
-    }
-
-    public void updateTrainerInfo(Trainer trainer) {
-        textViewTrainerName.setText(trainer.getName());
-        textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
-        textViewItems.setText(TextUtils.join(", ", trainer.getItems()));
-    }
-
-    private void updateTrainerName(String newName) {
-        if (currentTrainer != null) {
-            currentTrainer.setName(newName);
-            updateTrainerInfo(currentTrainer);
-
-            for (int i = 0; i < trainers.size(); i++) {
-                if (trainers.get(i).getId() == currentTrainer.getId()) {
-                    trainers.set(i, currentTrainer);
-                    break;
-                }
-            }
-
-            fileHandler.saveTrainers(trainers);
-        }
     }
 
     private void showChangeNameDialog() {
@@ -186,15 +151,101 @@ public class TrainerFragment extends Fragment {
         builder.show();
     }
 
+    private void showReleasePokemonDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Select Pokemon to Release");
 
-    public void releasePokemon(Pokemon pokemon) {
-        if (currentTrainer != null) {
-            currentTrainer.releasePokemon(pokemon);
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        // Loop through the Pokemon list to create TextViews dynamically
+        for (Pokemon pokemon : currentTrainer.getPokedex()) {
+            TextView textView = new TextView(requireContext());
+            textView.setText(pokemon.getName());
+            textView.setPadding(16, 16, 16, 16);
+            textView.setTextSize(18);
+
+            layout.addView(textView);
+        }
+
+        builder.setView(layout);
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        final AlertDialog dialog = builder.create();
+
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            child.setOnClickListener(v -> {
+                TextView textView = (TextView) v;
+                String pokemonName = textView.getText().toString();
+
+                Pokemon selectedPokemon = null;
+                for (Pokemon pokemon : currentTrainer.getPokedex()) {
+                    if (pokemon.getName().equals(pokemonName)) {
+                        selectedPokemon = pokemon;
+                        break;
+                    }
+                }
+                if (selectedPokemon != null) {
+                    releasePokemon(selectedPokemon);
+                    dialog.dismiss(); // Close the dialog
+                }
+            });
+        }
+        dialog.show();
+    }
+
+    private void releasePokemon(Pokemon pokemon) {
+        if (currentTrainer != null && currentTrainer.getPokedex() != null) {
+            currentTrainer.getPokedex().remove(pokemon);
             updateTrainerInfo(currentTrainer);
-            fileHandler.saveTrainers(trainers);
             Toast.makeText(requireContext(), "You released " + pokemon.getName(), Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void updateTrainerName(String newName) {
+        if (currentTrainer != null) {
+            currentTrainer.setName(newName);
+            updateTrainerInfo(currentTrainer);
+
+            for (int i = 0; i < trainers.size(); i++) {
+                if (trainers.get(i).getId() == currentTrainer.getId()) {
+                    trainers.set(i, currentTrainer);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void searchTrainer(String name) {
+        if (trainers == null || trainers.isEmpty()) {
+            Toast.makeText(requireContext(), "No trainers available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        for (Trainer trainer : trainers) {
+            if (trainer.getName().equalsIgnoreCase(name)) {
+                currentTrainer = trainer;
+                updateTrainerInfo(currentTrainer);
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("searched_trainer_id", currentTrainer.getId());
+                editor.apply();
+
+                return;
+            }
+        }
+        Toast.makeText(requireContext(), "Trainer not found", Toast.LENGTH_SHORT).show();
+    }
+
+    public void updateTrainerInfo(Trainer trainer) {
+        textViewTrainerName.setText(trainer.getName());
+        textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
+        textViewItems.setText(TextUtils.join(", ", trainer.getItems()));
+        PokemonSharedPreferences.saveCaughtPokemon(requireContext(), trainer.getId(), trainer.getPokedex());
+    }
+
+
 
 
 

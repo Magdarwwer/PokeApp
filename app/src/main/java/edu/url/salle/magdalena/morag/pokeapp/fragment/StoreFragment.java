@@ -1,6 +1,9 @@
 package edu.url.salle.magdalena.morag.pokeapp.fragment;
 
 import androidx.fragment.app.Fragment;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,8 +62,30 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
             itemName = "Masterball";
         }
 
-        buyItem(itemName, price);
+        showBuyConfirmationDialog(itemName, price);
     }
+    private void showBuyConfirmationDialog(String itemName, int price) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Buy " + itemName + "?");
+        builder.setMessage("Are you sure you want to buy " + itemName + " for " + price + " coins?");
+
+        builder.setPositiveButton("Buy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                buyItem(itemName, price);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
     private void buyItem(String itemName, int price) {
         if (trainer != null) {
             if (trainer.getMoney() >= price) {

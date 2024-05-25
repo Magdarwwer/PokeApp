@@ -48,5 +48,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.loopj.android:android-async-http:1.4.9")
+    implementation("androidx.room:room-runtime:2.4.0")
+    annotationProcessor("androidx.room:room-compiler:2.4.0")
 
 }

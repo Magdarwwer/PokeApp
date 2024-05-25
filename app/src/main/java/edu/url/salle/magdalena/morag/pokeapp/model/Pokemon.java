@@ -19,6 +19,7 @@ public class Pokemon implements Parcelable {
     private ArrayList<Ability> abilitiesList;
     private ArrayList<Stat> statsList;
     private boolean isCaught;
+    private String pokeballType;
 
     public Pokemon(int id, String name, String pokemonUrl, String front_default, String back_default, String description, int height, int weight,
                    ArrayList<Type> typesList, ArrayList<Ability> abilitiesList, ArrayList<Stat> statsList) {
@@ -33,6 +34,13 @@ public class Pokemon implements Parcelable {
         this.typesList = typesList;
         this.abilitiesList = abilitiesList;
         this.statsList = statsList;
+    }
+
+    public Pokemon(int id, String name, boolean isCaught, String pokeballType) {
+        this.id = id;
+        this.name = name;
+        this.isCaught = isCaught;
+        this.pokeballType = pokeballType;
     }
 
     protected Pokemon(Parcel in) {
@@ -160,6 +168,14 @@ public class Pokemon implements Parcelable {
 
     public void setCaught(boolean caught) {
         isCaught = caught;
+    }
+
+    public String getPokeballType() {
+        return pokeballType;
+    }
+
+    public void setPokeballType(String pokeballType) {
+        this.pokeballType = pokeballType;
     }
 
     public int getType() {
