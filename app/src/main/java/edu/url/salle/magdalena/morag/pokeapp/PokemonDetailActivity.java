@@ -13,12 +13,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 import edu.url.salle.magdalena.morag.pokeapp.adapter.AbilityAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.StatAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.TypeAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
+import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 
+import android.app.AlertDialog;
+import android.content.SharedPreferences;
+import android.widget.Button;
+import android.widget.Toast;
 
 public class PokemonDetailActivity extends AppCompatActivity {
 
@@ -34,18 +41,20 @@ public class PokemonDetailActivity extends AppCompatActivity {
     private TextView heightTextView;
     private TextView weightTextView;
     private TextView descriptionTextView;
+    private Button catchButton;
+
+    private Trainer currentTrainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_pokemon_detail);
 
-        // Initialize RecyclerViews
         abilitiesRecyclerView = findViewById(R.id.recyclerViewAbilities);
         statsRecyclerView = findViewById(R.id.recyclerViewStats);
         typesRecyclerView = findViewById(R.id.recyclerViewTypes);
         descriptionTextView = findViewById(R.id.textViewDescription);
-
+        catchButton = findViewById(R.id.buttonCatchPokemon);
 
         abilityAdapter = new AbilityAdapter();
         statAdapter = new StatAdapter();
@@ -65,7 +74,6 @@ public class PokemonDetailActivity extends AppCompatActivity {
         heightTextView = findViewById(R.id.textViewHeight);
         weightTextView = findViewById(R.id.textViewWeight);
 
-
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("pokemon") && intent.hasExtra("fullPokemonList")) {
             Pokemon pokemon = intent.getParcelableExtra("pokemon");
@@ -73,13 +81,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
             if (pokemon != null && bundle != null) {
                 ArrayList<Pokemon> fullPokemonList = (ArrayList<Pokemon>) bundle.getSerializable("fullPokemonList");
                 if (fullPokemonList != null) {
-                    Pokemon selectedPokemon = null;
-                    for (Pokemon p : fullPokemonList) {
-                        if (p.getId() == pokemon.getId()) {
-                            selectedPokemon = p;
-                            break;
-                        }
-                    }
+                    Pokemon selectedPokemon = fullPokemonList.stream().filter(p -> p.getId() == pokemon.getId()).findFirst().orElse(null);
 
                     if (selectedPokemon != null) {
                         nameTextView.setText(selectedPokemon.getName().toUpperCase());
@@ -107,9 +109,53 @@ public class PokemonDetailActivity extends AppCompatActivity {
                         abilityAdapter.notifyDataSetChanged();
                         statAdapter.notifyDataSetChanged();
                         typeAdapter.notifyDataSetChanged();
+
+                        catchButton.setOnClickListener(v -> showCatchDialog(selectedPokemon));
                     }
                 }
             }
         }
+        currentTrainer = getCurrentTrainer();
+    }
+
+    private Trainer getCurrentTrainer() {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        String trainerName = sharedPreferences.getString("trainer_name", null);
+        if (trainerName != null) {
+            return new Trainer(1, trainerName, 1000, new ArrayList<>(), new ArrayList<>());
+        }
+        return null;
+    }
+
+    private void showCatchDialog(Pokemon pokemon) {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+
+        if (!isLoggedIn) {
+            Toast.makeText(this, "You must be logged in to catch a Pokémon.", Toast.LENGTH_SHORT).show();
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            startActivity(loginIntent);
+            return;
+        }
+
+        if (currentTrainer == null) {
+            Toast.makeText(this, "Failed to retrieve trainer data.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        List<String> items = currentTrainer.getItems();
+        String[] pokeballs = items.toArray(new String[0]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select a Pokéball");
+        builder.setItems(pokeballs, (dialog, which) -> {
+            String selectedBall = pokeballs[which];
+            catchPokemon(pokemon, selectedBall);
+        });
+        builder.show();
+    }
+
+    private void catchPokemon(Pokemon pokemon, String pokeball) {
+        Toast.makeText(this, "Caught " + pokemon.getName() + " with a " + pokeball + "!", Toast.LENGTH_SHORT).show();
     }
 }

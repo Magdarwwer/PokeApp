@@ -4,21 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Store implements Parcelable {
-    // Prices of items in the store
-    public static final int POKEBALL_PRICE = 200;
-    public static final int SUPERBALL_PRICE = 500;
-    public static final int ULTRABALL_PRICE = 1500;
-    public static final int MASTERBALL_PRICE = 100000;
+    public static int POKEBALL_PRICE = 200;
+    public static int SUPERBALL_PRICE = 500;
+    public static int ULTRABALL_PRICE = 1500;
+    public static int MASTERBALL_PRICE = 100000;
 
-    // Constructor
-    public Store() {
-        // Default constructor
-    }
-
-    // Parcelable methods
-    protected Store(Parcel in) {
-        // No additional fields to read
-    }
 
     public static final Creator<Store> CREATOR = new Creator<Store>() {
         @Override
@@ -32,6 +22,16 @@ public class Store implements Parcelable {
         }
     };
 
+    public Store() {
+    }
+
+    protected Store(Parcel in) {
+        POKEBALL_PRICE = in.readInt();
+        SUPERBALL_PRICE = in.readInt();
+        ULTRABALL_PRICE = in.readInt();
+        MASTERBALL_PRICE = in.readInt();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -39,6 +39,9 @@ public class Store implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        // No additional fields to write
+        dest.writeInt(POKEBALL_PRICE);
+        dest.writeInt(SUPERBALL_PRICE);
+        dest.writeInt(ULTRABALL_PRICE);
+        dest.writeInt(MASTERBALL_PRICE);
     }
 }

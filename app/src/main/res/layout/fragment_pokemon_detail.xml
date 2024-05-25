@@ -1,119 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/textViewNameDetail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
-
-    <TextView
-        android:id="@+id/textViewHeight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Height"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewNameDetail"
-        android:layout_marginTop="8dp"/>
-
-    <TextView
-        android:id="@+id/textViewWeight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weight"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewHeight"
-        android:layout_marginTop="8dp"/>
-
-    <TextView
-        android:id="@+id/textViewDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weight"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewWeight"
-        android:layout_marginTop="8dp"/>
 
     <ImageView
         android:id="@+id/imageViewFrontDetail"
         android:layout_width="133dp"
         android:layout_height="133dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:text="FrontPic"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewDescription"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageViewBackDetail"
         android:layout_width="133dp"
         android:layout_height="133dp"
+        android:layout_marginStart="260dp"
+        android:layout_marginTop="4dp"
         android:text="BackPic"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toEndOf="@id/imageViewFrontDetail"
-        app:layout_constraintTop_toTopOf="@id/imageViewFrontDetail"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewNameDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="180dp"
+        android:layout_marginTop="8dp"
+        android:text="Name"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/textViewHeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="156dp"
+        android:layout_marginTop="12dp"
+        android:text="Height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewNameDetail" />
+
+    <TextView
+        android:id="@+id/textViewWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="156dp"
+        android:layout_marginTop="8dp"
+        android:text="Weight"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewHeight" />
+
+    <TextView
+        android:id="@+id/textViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="60dp"
+        android:text="Description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewWeight" />
 
     <TextView
         android:id="@+id/textViewType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Types"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageViewFrontDetail"
-        android:layout_marginTop="16dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewTypes"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/textViewType"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="80dp"
+        app:layout_constraintHorizontal_chainStyle="spread" />
 
     <TextView
         android:id="@+id/textViewAbility"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
         android:text="Abilities"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewTypes"
-        android:layout_marginTop="16dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewAbilities"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/textViewAbility"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/textViewType"
+        app:layout_constraintTop_toTopOf="@id/textViewType" />
 
     <TextView
         android:id="@+id/textViewStat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stats"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewAbilities"
-        android:layout_marginTop="16dp"/>
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/textViewAbility"
+        app:layout_constraintTop_toTopOf="@id/textViewAbility"
+        android:layout_marginStart="16dp"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Lists -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTypes"
+        android:layout_width="91dp"
+        android:layout_height="201dp"
+        app:layout_constraintEnd_toEndOf="@id/textViewType"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/textViewType"
+        app:layout_constraintTop_toBottomOf="@id/textViewType"
+        app:layout_constraintWidth_default="spread" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewAbilities"
+        android:layout_width="91dp"
+        android:layout_height="201dp"
+        app:layout_constraintEnd_toEndOf="@id/textViewAbility"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/textViewAbility"
+        app:layout_constraintTop_toBottomOf="@id/textViewAbility"
+        app:layout_constraintWidth_default="spread" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewStats"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="91dp"
+        android:layout_height="201dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@id/textViewStat"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/textViewStat"
         app:layout_constraintTop_toBottomOf="@id/textViewStat"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_default="spread" />
+
+    <Button
+        android:id="@+id/buttonCatchPokemon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="204dp"
+        android:text="Catch Pokémon"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewStats" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

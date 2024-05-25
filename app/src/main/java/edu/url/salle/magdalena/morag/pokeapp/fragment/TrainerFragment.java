@@ -1,3 +1,5 @@
+package edu.url.salle.magdalena.morag.pokeapp.fragment;
+
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
@@ -138,20 +140,4 @@ public class TrainerFragment extends Fragment {
 
         builder.show();
     }
-
-    private void handleMoneyCalculation(int moneySpent) {
-        if (currentTrainer != null) {
-            int currentMoney = currentTrainer.getMoney();
-            int remainingMoney = currentMoney - moneySpent;
-
-            if (remainingMoney >= 0) {
-                currentTrainer.setMoney(remainingMoney);
-                updateTrainerInfo(currentTrainer);
-                Toast.makeText(requireContext(), "Transaction successful", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(requireContext(), "Insufficient funds", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 }
