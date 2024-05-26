@@ -247,7 +247,12 @@ public class TrainerFragment extends Fragment {
         textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
         textViewItems.setText(TextUtils.join(", ", trainer.getItems()));
         PokemonSharedPreferences.saveCaughtPokemon(requireContext(), trainer.getId(), trainer.getPokedex());
+
+        if (adapter != null) {
+            adapter.updateCapturedPokemons(trainer.getPokedex());
+        }
     }
+
 
 
 

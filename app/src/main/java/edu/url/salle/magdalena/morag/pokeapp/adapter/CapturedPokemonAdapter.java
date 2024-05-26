@@ -29,6 +29,11 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         this.context = context;
         this.pokemonAdapter = pokemonAdapter;
     }
+    public void updateCapturedPokemons(ArrayList<Pokemon> capturedPokemons) {
+        this.capturedPokemons = capturedPokemons;
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override
