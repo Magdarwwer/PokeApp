@@ -83,10 +83,10 @@ public class Pokemon implements Parcelable {
     public int getId() {
         return id;
     }
-
     public int getType() {
         return type;
     }
+
 
     public boolean isCaught() {
         return isCaught;

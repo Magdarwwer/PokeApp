@@ -168,8 +168,9 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         statsList.add(stat);
                     }
 
-                    // Fetching description (flavor text)
+                    // Fetching description (flavor text) and type int
                     fetchSpeciesDetails(pokemon);
+
 
                     // Setting Pokemon details
                     pokemon.setName(name);
@@ -210,13 +211,18 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         String languageName = language.getString("name");
                         if (languageName.equals("en")) {
                             String flavorText = entry.getString("flavor_text");
-                            flavorText = flavorText.replace("\n", " ").trim();
+                            flavorText = flavorText.replaceAll("\n", " ").trim();
+                            flavorText = flavorText.replaceAll("\f", " ").trim();
                             flavorTextBuilder.append(flavorText);
                             break;
                         }
                     }
                     String flavorText = flavorTextBuilder.toString();
                     pokemon.setDescription(flavorText);
+
+                    int captureRate = response.getInt("capture_rate");
+                    pokemon.setType(captureRate);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -228,6 +234,8 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
             }
         });
     }
+
+
 
 
     private void updatePokemonInList(Pokemon updatedPokemon) {

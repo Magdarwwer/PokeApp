@@ -111,6 +111,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(backImageView);
 
+
                         abilityAdapter.setAbilities(selectedPokemon.getAbilitiesList());
                         statAdapter.setStats(selectedPokemon.getStatsList());
                         typeAdapter.setTypes(selectedPokemon.getTypesList());
@@ -128,6 +129,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
                 }
             }
         }
+
 
         catchPokemonButton.setOnClickListener(v -> {
             Pokeball pokeball = new Pokeball("Pokeball");
@@ -147,6 +149,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
                 double captureProbability = pokeball.getCaptureProbability(pokemon.getType());
                 if (Math.random() < captureProbability) {
                     activeTrainer.capturePokemon(pokemon, pokeball);
+                    pokemon.setCaught(true);
                     trainerFragment.saveTrainerData(activeTrainer);
                     Toast.makeText(this, pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -157,6 +160,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
 }
