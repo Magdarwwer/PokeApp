@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <!-- Trainer Info Section -->
     <TextView
         android:id="@+id/textViewTrainerNameInfo"

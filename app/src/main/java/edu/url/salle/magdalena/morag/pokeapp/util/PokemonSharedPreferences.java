@@ -12,22 +12,23 @@ import java.util.ArrayList;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 
 public class PokemonSharedPreferences {
-    private static final String PREF_NAME_PREFIX = "Trainer_";
-    private static final String KEY_POKEMON_LIST = "Pokemon_list";
 
-    public static void saveCaughtPokemon(Context context, int trainerId, ArrayList<Pokemon> caughtPokemonList) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME_PREFIX + trainerId, Context.MODE_PRIVATE);
+    private static final String PREF_NAME = "PokemonPrefs";
+    private static final String CAUGHT_POKEMON_KEY_PREFIX = "caught_pokemon_";
+
+    public static void saveCaughtPokemon(Context context, int trainerId, ArrayList<Pokemon> pokedex) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(caughtPokemonList);
-        editor.putString(KEY_POKEMON_LIST, json);
+        String json = gson.toJson(pokedex);
+        editor.putString(CAUGHT_POKEMON_KEY_PREFIX + trainerId, json);
         editor.apply();
     }
 
     public static ArrayList<Pokemon> loadCaughtPokemon(Context context, int trainerId) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME_PREFIX + trainerId, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString(KEY_POKEMON_LIST, null);
+        String json = sharedPreferences.getString(CAUGHT_POKEMON_KEY_PREFIX + trainerId, null);
         Type type = new TypeToken<ArrayList<Pokemon>>() {}.getType();
         return gson.fromJson(json, type);
     }

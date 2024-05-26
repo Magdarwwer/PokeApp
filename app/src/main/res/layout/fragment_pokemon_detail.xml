@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#000000"
     tools:ignore="ExtraText">
+
     <!-- Left pokeball icon -->
     <ImageView
         android:id="@+id/imageViewLeftPokeball"
@@ -102,8 +103,8 @@
         android:id="@+id/textViewWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="16dp"
         android:text="Weight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewHeight" />
@@ -112,8 +113,8 @@
         android:id="@+id/textViewDescription"
         android:layout_width="75dp"
         android:layout_height="23dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="Description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewWeight" />
@@ -122,13 +123,14 @@
         android:id="@+id/textViewType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="96dp"
         android:text="Types"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageViewFrontDetail"
-        android:layout_marginTop="80dp"
-        app:layout_constraintHorizontal_chainStyle="spread" />
+        app:layout_constraintTop_toBottomOf="@id/imageViewFrontDetail" />
 
     <TextView
         android:id="@+id/textViewAbility"
@@ -183,5 +185,15 @@
         app:layout_constraintHorizontal_bias="0.996"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewStat" />
+
+    <Button
+        android:id="@+id/buttonCatchPokemon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Catch Pokémon"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewStats"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

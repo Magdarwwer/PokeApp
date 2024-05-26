@@ -34,7 +34,6 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         notifyDataSetChanged();
     }
 
-
     @NonNull
     @Override
     public CapturedPokemonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -221,6 +221,7 @@ public class TrainerFragment extends Fragment {
         }
     }
 
+
     private void searchTrainer(String name) {
         if (trainers == null || trainers.isEmpty()) {
             Toast.makeText(requireContext(), "No trainers available", Toast.LENGTH_SHORT).show();
@@ -253,8 +254,23 @@ public class TrainerFragment extends Fragment {
         }
     }
 
+    public void onPokemonCaught(Pokemon pokemon) {
+        addPokemonToTrainer(pokemon, currentTrainer);
+        Toast.makeText(requireContext(), "You caught " + pokemon.getName(), Toast.LENGTH_SHORT).show();
+    }
 
+    public void addPokemonToTrainer(Pokemon pokemon, Trainer trainer) {
+        if (trainer.getPokedex().contains(pokemon)) {
+            Toast.makeText(getContext(), "You already have " + pokemon.getName(), Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        trainer.getPokedex().add(pokemon);
+        PokemonSharedPreferences.saveCaughtPokemon(getContext(), trainer.getId(), trainer.getPokedex());
+
+        adapter.notifyDataSetChanged();
+        updateTrainerInfo(trainer);
+    }
 
 
 

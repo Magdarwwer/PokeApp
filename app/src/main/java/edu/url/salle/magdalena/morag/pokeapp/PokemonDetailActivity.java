@@ -1,9 +1,12 @@
 package edu.url.salle.magdalena.morag.pokeapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,8 +20,10 @@ import java.util.ArrayList;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.AbilityAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.StatAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.TypeAdapter;
+import edu.url.salle.magdalena.morag.pokeapp.fragment.TrainerFragment;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
-
+import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
+import edu.url.salle.magdalena.morag.pokeapp.util.PokemonSharedPreferences;
 
 public class PokemonDetailActivity extends AppCompatActivity {
 
@@ -34,18 +39,26 @@ public class PokemonDetailActivity extends AppCompatActivity {
     private TextView heightTextView;
     private TextView weightTextView;
     private TextView descriptionTextView;
+    private Button catchPokemonButton;
+    private Pokemon selectedPokemon;
+    private Trainer currentTrainer;
+    private TrainerFragment trainerFragment;
+
+    public PokemonDetailActivity(){
+        trainerFragment = new TrainerFragment();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_pokemon_detail);
 
-        // Initialize RecyclerViews
+
         abilitiesRecyclerView = findViewById(R.id.recyclerViewAbilities);
         statsRecyclerView = findViewById(R.id.recyclerViewStats);
         typesRecyclerView = findViewById(R.id.recyclerViewTypes);
         descriptionTextView = findViewById(R.id.textViewDescription);
-
+        catchPokemonButton = findViewById(R.id.buttonCatchPokemon);
 
         abilityAdapter = new AbilityAdapter();
         statAdapter = new StatAdapter();
@@ -65,15 +78,15 @@ public class PokemonDetailActivity extends AppCompatActivity {
         heightTextView = findViewById(R.id.textViewHeight);
         weightTextView = findViewById(R.id.textViewWeight);
 
-
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("pokemon") && intent.hasExtra("fullPokemonList")) {
             Pokemon pokemon = intent.getParcelableExtra("pokemon");
             Bundle bundle = intent.getExtras();
+            currentTrainer = (Trainer) intent.getSerializableExtra("trainer");
             if (pokemon != null && bundle != null) {
                 ArrayList<Pokemon> fullPokemonList = (ArrayList<Pokemon>) bundle.getSerializable("fullPokemonList");
                 if (fullPokemonList != null) {
-                    Pokemon selectedPokemon = null;
+                    selectedPokemon = null;
                     for (Pokemon p : fullPokemonList) {
                         if (p.getId() == pokemon.getId()) {
                             selectedPokemon = p;
@@ -111,5 +124,24 @@ public class PokemonDetailActivity extends AppCompatActivity {
                 }
             }
         }
+
+        catchPokemonButton.setOnClickListener(v -> catchPokemon());
     }
+
+
+    public interface OnPokemonCaughtListener {
+        void onPokemonCaught(Pokemon pokemon);
+    }
+
+    private void catchPokemon() {
+        if (selectedPokemon != null && currentTrainer != null) {
+            if (this instanceof OnPokemonCaughtListener) {
+                trainerFragment.onPokemonCaught(selectedPokemon);
+            }
+        } else {
+            Toast.makeText(this, "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }
