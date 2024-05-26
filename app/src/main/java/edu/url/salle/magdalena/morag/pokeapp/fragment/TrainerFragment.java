@@ -70,7 +70,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,7 +82,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         buttonReleasePokemon = rootView.findViewById(R.id.buttonReleasePokemon);
 
 
-
         itemAdapter = new ItemAdapter(getContext());
         pokemonAdapter = new PokemonAdapter(getContext());
         adapter = new CapturedPokemonAdapter(new ArrayList<>(), getContext(), pokemonAdapter);
@@ -94,7 +92,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         LinearLayoutManager capturedPokemonsLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewCapturedPokemons.setLayoutManager(capturedPokemonsLayoutManager);
 
-
         buttonChangeName.setOnClickListener(v -> showChangeNameDialog());
         buttonReleasePokemon.setOnClickListener(v -> showReleasePokemonDialog());
 
@@ -103,6 +100,7 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         pokemonAdapter.notifyDataSetChanged();
         return rootView;
     }
+
 
     private void loadAndDisplayTrainerData() {
         String trainerName = sharedPreferences.getString(KEY_TRAINER_NAME, "");
@@ -114,14 +112,16 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         if (trainer != null) {
             textViewTrainerName.setText(trainer.getName());
             textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
-            itemAdapter = new ItemAdapter(getContext());
-            recyclerViewItems.setAdapter(itemAdapter);
-            pokemonAdapter = new PokemonAdapter(getContext());
-            recyclerViewCapturedPokemons.setAdapter(adapter);
+
+            itemAdapter.setItems(new ArrayList<>(trainer.getItems()));
+            pokemonAdapter.addPokemonList(new ArrayList<>(trainer.getPokedex()));
+
+            adapter.updateCapturedPokemons(new ArrayList<>(trainer.getPokedex()));
         } else {
             Toast.makeText(getContext(), "Trainer data not available", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
     @Override
@@ -136,7 +136,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         super.onViewCreated(view, savedInstanceState);
         loadAndDisplayTrainerData();
     }
-
 
 
     public void saveTrainerData(Trainer trainer) {
@@ -160,7 +159,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         Trainer activeTrainer = trainerManager.getActiveTrainer();
         saveTrainerData(activeTrainer);
     }
-
 
 
     private void showChangeNameDialog() {

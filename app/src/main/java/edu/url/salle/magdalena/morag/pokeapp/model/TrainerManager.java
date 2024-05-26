@@ -19,13 +19,17 @@ public class TrainerManager {
         // Create and add trainer
         Trainer trainer1 = new Trainer("Ash", 1000, new ArrayList<>(), new ArrayList<>());
 
-        Pokemon pikachu = new Pokemon(25, "Pikachu", "First Evolution");
-        Pokemon charmander = new Pokemon(4, "Charmander", "First Evolution");
-        Pokemon bulbasaur = new Pokemon(1, "Bulbasaur", "First Evolution");
+        trainer1.getItems().add("Potion");
+        trainer1.getItems().add("Revive");
+        trainer1.getItems().add("Pokeball");
 
-        trainer1.capturePokemon(pikachu, new Pokeball("Pokeball"));
-        trainer1.capturePokemon(charmander, new Pokeball("Ultraball"));
-        trainer1.capturePokemon(bulbasaur, new Pokeball("Ultraball"));
+        trainer1.getPokedex().add(new Pokemon(25, "Pikachu", "First Evolution"));
+        trainer1.getPokedex().add(new Pokemon(4, "Charmander", "First Evolution"));
+        trainer1.getPokedex().add(new Pokemon(1, "Bulbasaur", "First Evolution"));
+
+        trainer1.capturePokemon(trainer1.getPokedex().get(0), new Pokeball("Pokeball"));
+        trainer1.capturePokemon(trainer1.getPokedex().get(1), new Pokeball("Ultraball"));
+        trainer1.capturePokemon(trainer1.getPokedex().get(2), new Pokeball("Ultraball"));
 
         trainers.add(trainer1);
 

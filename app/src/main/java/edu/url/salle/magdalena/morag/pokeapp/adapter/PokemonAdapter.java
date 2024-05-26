@@ -68,7 +68,6 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
     }
 
 
-
     public void addPokemonList(List<Pokemon> pokemonList) {
         dataset.addAll(pokemonList);
         notifyDataSetChanged();
