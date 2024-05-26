@@ -52,16 +52,22 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         holder.nameTextView.setText(p.getName());
 
         Glide.with(context)
-                .load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + p.getId() + ".png")
+                .load(getPokemonFrontImageUrl(p.getId()))
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.pictureImageView);
+    }
+
+    public String getPokemonFrontImageUrl(int pokemonId) {
+        return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + pokemonId + ".png";
     }
 
     @Override
     public int getItemCount() {
         return dataset.size();
     }
+
+
 
     public void addPokemonList(List<Pokemon> pokemonList) {
         dataset.addAll(pokemonList);
@@ -85,6 +91,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
             nameTextView = itemView.findViewById(R.id.nameTextView);
             itemView.setOnClickListener(this);
         }
+
 
         @Override
         public void onClick(View v) {

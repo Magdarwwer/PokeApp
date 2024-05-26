@@ -1,5 +1,6 @@
 package edu.url.salle.magdalena.morag.pokeapp.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -20,9 +21,13 @@ import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemonAdapter.CapturedPokemonViewHolder> {
 
     private ArrayList<Pokemon> capturedPokemons;
+    private Context context;
+    private final PokemonAdapter pokemonAdapter;
 
-    public CapturedPokemonAdapter(ArrayList<Pokemon> capturedPokemons) {
+    public CapturedPokemonAdapter(ArrayList<Pokemon> capturedPokemons, Context context, PokemonAdapter pokemonAdapter) {
         this.capturedPokemons = capturedPokemons;
+        this.context = context;
+        this.pokemonAdapter = pokemonAdapter;
     }
 
     @NonNull
@@ -43,7 +48,7 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         return capturedPokemons.size();
     }
 
-    public static class CapturedPokemonViewHolder extends RecyclerView.ViewHolder {
+    public class CapturedPokemonViewHolder extends RecyclerView.ViewHolder {
 
         private TextView pokemonNameTextView;
         private ImageView pokemonImageView;
@@ -57,16 +62,19 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         }
 
         public void bind(Pokemon pokemon) {
-            pokemonNameTextView.setText(pokemon.getName());
-            Glide.with(itemView.getContext())
-                    .load(pokemon.getFront_default())
-                    .apply(RequestOptions.placeholderOf(R.drawable.placeholder_image))
-                    .into(pokemonImageView);
+            if (pokemon != null) {
+                pokemonNameTextView.setText(pokemon.getName());
+                pokeballImageView.setImageResource(getPokeballImageResId(pokemon.getPokeballType()));
 
-            pokeballImageView.setImageResource(getPokeballImageResId(pokemon.getPokeballType()));
+                Glide.with(itemView.getContext())
+                        .load(pokemonAdapter.getPokemonFrontImageUrl(pokemon.getId()))
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(pokemonImageView);
+            }
         }
 
-        public int getPokeballImageResId(String pokeballType) {
+        private int getPokeballImageResId(String pokeballType) {
             switch (pokeballType) {
                 case "Pokeball":
                     return R.mipmap.pokeball;
@@ -81,5 +89,4 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
             }
         }
     }
-
 }

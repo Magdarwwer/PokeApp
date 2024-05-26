@@ -21,9 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import edu.url.salle.magdalena.morag.pokeapp.PokemonDetailActivity;
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.CapturedPokemonAdapter;
+import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 import edu.url.salle.magdalena.morag.pokeapp.util.PokemonSharedPreferences;
@@ -39,6 +39,7 @@ public class TrainerFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private RecyclerView recyclerView;
     private CapturedPokemonAdapter adapter;
+    private PokemonAdapter pokemonAdapter;
 
     public TrainerFragment(Trainer currentTrainer) {
         this.currentTrainer = currentTrainer;
@@ -55,6 +56,8 @@ public class TrainerFragment extends Fragment {
         textViewTrainerMoney = root.findViewById(R.id.textViewTrainerMoney);
         textViewItems = root.findViewById(R.id.textViewItems);
         recyclerView = root.findViewById(R.id.recyclerViewCapturedPokemons);
+
+        pokemonAdapter = new PokemonAdapter(getContext());
 
         Trainer trainer1 = new Trainer(1, "Ash", 1000, new ArrayList<>(), new ArrayList<>());
         trainer1.getPokedex().add(new Pokemon(25,"Pikachu", true,"Pokeball" ));
@@ -80,6 +83,7 @@ public class TrainerFragment extends Fragment {
                 currentTrainer.setPokedex(caughtPokemon);
             }
         }
+
         Button openDialogButton = root.findViewById(R.id.buttonOpenDialog);
         openDialogButton.setOnClickListener(v -> showChangeNameDialog());
 
@@ -107,7 +111,7 @@ public class TrainerFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(layoutManager);
         if (currentTrainer != null && currentTrainer.getPokedex() != null) {
-            adapter = new CapturedPokemonAdapter(currentTrainer.getPokedex());
+            adapter = new CapturedPokemonAdapter(currentTrainer.getPokedex(), getContext(), pokemonAdapter);
             recyclerView.setAdapter(adapter);
         } else {
             Toast.makeText(requireContext(), "No captured pokemons available", Toast.LENGTH_SHORT).show();
@@ -188,7 +192,7 @@ public class TrainerFragment extends Fragment {
                 }
                 if (selectedPokemon != null) {
                     releasePokemon(selectedPokemon);
-                    dialog.dismiss(); // Close the dialog
+                    dialog.dismiss();
                 }
             });
         }
