@@ -96,7 +96,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         loadAndDisplayTrainerData();
     }
 
-
     private void loadAndDisplayTrainerData() {
         String trainerName = sharedPreferences.getString(KEY_TRAINER_NAME, "");
         int trainerMoney = sharedPreferences.getInt(KEY_TRAINER_MONEY, 0);
@@ -117,7 +116,7 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         }
     }
 
-    private void saveTrainerData(Trainer trainer) {
+    public void saveTrainerData(Trainer trainer) {
         if (trainer != null) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(KEY_TRAINER_NAME, trainer.getName());
@@ -200,11 +199,11 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
     }
 
     @Override
-    public void onPokemonCaught(Pokemon pokemon) {
+    public void onPokemonCaught(Pokemon pokemon, String pokeballType) {
         if (pokemon != null && trainerManager != null) {
             Trainer activeTrainer = trainerManager.getActiveTrainer();
             if (activeTrainer != null) {
-                activeTrainer.capturePokemon(pokemon);
+                activeTrainer.capturePokemon(pokemon, pokeballType);
                 saveTrainerData(activeTrainer);
                 Toast.makeText(getContext(), pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
             }
@@ -212,4 +211,5 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
             Toast.makeText(getContext(), "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

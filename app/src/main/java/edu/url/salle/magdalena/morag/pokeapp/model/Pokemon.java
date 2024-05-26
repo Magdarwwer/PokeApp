@@ -196,6 +196,22 @@ public class Pokemon implements Parcelable {
         }
     }
 
+    public double getCaptureProbability(String pokeballType) {
+        double baseProbability = (600.0 - getType()) / 600.0;
+        switch (pokeballType) {
+            case "Pokeball":
+                return baseProbability * 1.0;
+            case "Superball":
+                return baseProbability * 1.5;
+            case "Ultraball":
+                return baseProbability * 2.0;
+            case "Masterball":
+                return 1.0; // 100% capture probability
+            default:
+                return 0.0;
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;

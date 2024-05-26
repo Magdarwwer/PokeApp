@@ -10,7 +10,6 @@ public class Trainer {
     private ArrayList<Pokemon> pokedex;
     private ArrayList<String> items;
 
-
     public Trainer() {
         // Default constructor required by Room
     }
@@ -94,9 +93,16 @@ public class Trainer {
         return pokedex.size() < 6;
     }
 
-    public void capturePokemon(Pokemon pokemon) {
+    public void capturePokemon(Pokemon pokemon, String pokeballType) {
         if (pokemon != null && canAddPokemon()) {
-            this.pokedex.add(pokemon);
+            double captureProbability = pokemon.getCaptureProbability(pokeballType);
+            if (Math.random() < captureProbability) {
+                this.pokedex.add(pokemon);
+                int moneyEarned = 400 + 100 * pokemon.getType();
+                setMoney(moneyEarned);
+            } else {
+                System.out.println("Pokemon escaped from the Pokeball!");
+            }
         } else {
             System.out.println("Trainer cannot capture more than 6 Pokemon.");
         }

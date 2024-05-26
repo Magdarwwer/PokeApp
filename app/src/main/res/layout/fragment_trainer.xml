@@ -3,110 +3,128 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#000000"
+    tools:ignore="ExtraText">
 
     <!-- Trainer Info Section -->
-    <TextView
-        android:id="@+id/textViewTrainerNameInfo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="60dp"
-        android:text="Trainer's Name: "
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:gravity="center">
 
+        <ImageView
+            android:id="@+id/imageViewLeftPokeball"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/gamepoke" />
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textViewTrainerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trainer"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/imageViewRightPokeball"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/gamepoke" />
+    </LinearLayout>
+
+
+    <!-- Trainer Money Section -->
     <TextView
-        android:id="@+id/textViewTrainerName"
+        android:id="@+id/textViewTrainerMoneyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="60dp"
+        android:text="Money: "
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
 
     <TextView
         android:id="@+id/textViewTrainerMoney"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="79dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="8dp"
+        android:text="0"
         android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="Money"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textSize="18sp" />
 
+    <!-- Items Section -->
     <TextView
         android:id="@+id/textViewItemsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:text="Items:"
         android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
         android:textSize="18sp"
-        android:textStyle="bold" />
-
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewItems"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        android:layout_height="wrap_content" />
 
     <!-- Captured Pokemons Section -->
     <TextView
         android:id="@+id/textViewCapturedPokemonsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:text="Captured Pokemons:"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCapturedPokemons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        android:layout_height="wrap_content" />
 
     <!-- Buttons Section -->
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_marginTop="16dp"
-        android:gravity="center_horizontal">
+        android:gravity="center">
 
         <Button
             android:id="@+id/buttonChangeName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Change Name" />
+            android:text="Change Name"
+            android:layout_marginEnd="8dp" />
 
         <Button
             android:id="@+id/buttonReleasePokemon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Release Pokemon" />
+            android:text="Release Pokemon"
+            android:layout_marginEnd="8dp" />
 
         <Button
             android:id="@+id/buttonAddPokemon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:text="Add Pokemon" />
 
     </LinearLayout>

@@ -125,23 +125,31 @@ public class PokemonDetailActivity extends AppCompatActivity {
             }
         }
 
-        catchPokemonButton.setOnClickListener(v -> catchPokemon());
+        catchPokemonButton.setOnClickListener(v -> onPokemonCaught(selectedPokemon,"Pokeball"));
     }
 
 
     public interface OnPokemonCaughtListener {
-        void onPokemonCaught(Pokemon pokemon);
+        void onPokemonCaught(Pokemon pokemon, String pokeballType);
     }
 
-    private void catchPokemon() {
-        if (selectedPokemon != null && currentTrainer != null) {
-            if (this instanceof OnPokemonCaughtListener) {
-                ((OnPokemonCaughtListener) this).onPokemonCaught(selectedPokemon);
+
+    public void onPokemonCaught(Pokemon pokemon, String pokeballType) {
+        if (pokemon != null && currentTrainer != null) {
+            double captureProbability = pokemon.getCaptureProbability(pokeballType);
+            if (Math.random() < captureProbability) {
+                currentTrainer.capturePokemon(pokemon, pokeballType);
+                trainerFragment.saveTrainerData(currentTrainer);
+                Toast.makeText(this, pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Pokemon escaped from the Pokeball!", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(this, "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 
 }

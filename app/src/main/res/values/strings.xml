@@ -6,4 +6,11 @@
     <string name="image">PokeImage</string>
     <string name="money_format">Money: %d</string>
     <string name="price_format">Price: %d</string>
+    <string name="trainer_name_label">Trainers Name:</string>
+    <string name="trainer_money_label">Money:</string>
+    <string name="items_label">Items:</string>
+    <string name="captured_pokemons_label">Captured Pokemons:</string>
+    <string name="change_name_button">Change Name</string>
+    <string name="release_pokemon_button">Release Pokemon</string>
+    <string name="add_pokemon_button">Add Pokemon</string>
 </resources>
