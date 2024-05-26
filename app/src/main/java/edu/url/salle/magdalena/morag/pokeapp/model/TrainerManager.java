@@ -21,6 +21,8 @@ public class TrainerManager {
         trainer1.addItem("Revive");
         trainer1.addItem("Pokeball");
 
+
+        //Todo Pokemonslist been send out dublicate because of dublicate calls in adapter and fragtment
         Pokemon bulbasaur = new Pokemon(1, "Bulbasaur", "First Evolution");
         Pokemon pikachu = new Pokemon(25, "Pikachu", "First Evolution");
         Pokemon charmander = new Pokemon(4, "Charmander", "First Evolution");
