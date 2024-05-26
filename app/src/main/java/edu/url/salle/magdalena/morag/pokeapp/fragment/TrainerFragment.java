@@ -5,150 +5,155 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+import edu.url.salle.magdalena.morag.pokeapp.PokemonDetailActivity;
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.CapturedPokemonAdapter;
+import edu.url.salle.magdalena.morag.pokeapp.adapter.ItemAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
-import edu.url.salle.magdalena.morag.pokeapp.util.PokemonSharedPreferences;
+import edu.url.salle.magdalena.morag.pokeapp.model.TrainerManager;
 
-public class TrainerFragment extends Fragment {
+public class TrainerFragment extends Fragment implements PokemonDetailActivity.OnPokemonCaughtListener {
+
+    private static final String PREF_NAME = "TrainerData";
+    private static final String KEY_TRAINER_NAME = "trainerName";
+    private static final String KEY_TRAINER_MONEY = "trainerMoney";
+    private static final String KEY_TRAINER_ITEMS = "trainerItems";
+    private static final String KEY_TRAINER_POKEDEX = "trainerPokedex";
 
     private TextView textViewTrainerName;
     private TextView textViewTrainerMoney;
-    private TextView textViewItems;
-    private ArrayList<Trainer> trainers;
-    private Trainer currentTrainer;
-    private View root;
+    private RecyclerView recyclerViewItems;
+    private RecyclerView recyclerViewCapturedPokemons;
+    private Button buttonChangeName;
+    private Button buttonReleasePokemon;
+    private TrainerManager trainerManager;
     private SharedPreferences sharedPreferences;
-    private RecyclerView recyclerView;
+    private ItemAdapter itemAdapter;
     private CapturedPokemonAdapter adapter;
-    private PokemonAdapter pokemonAdapter;
 
-    public TrainerFragment(Trainer currentTrainer) {
-        this.currentTrainer = currentTrainer;
-        trainers = new ArrayList<>();
-    }
     public TrainerFragment() {
-        trainers = new ArrayList<>();
+        trainerManager = new TrainerManager();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        root = inflater.inflate(R.layout.fragment_trainer, container, false);
-        textViewTrainerName = root.findViewById(R.id.textViewTrainerName);
-        textViewTrainerMoney = root.findViewById(R.id.textViewTrainerMoney);
-        textViewItems = root.findViewById(R.id.textViewItems);
-        recyclerView = root.findViewById(R.id.recyclerViewCapturedPokemons);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_trainer, container, false);
 
-        pokemonAdapter = new PokemonAdapter(getContext());
+        textViewTrainerName = rootView.findViewById(R.id.textViewTrainerName);
+        textViewTrainerMoney = rootView.findViewById(R.id.textViewTrainerMoney);
+        recyclerViewItems = rootView.findViewById(R.id.recyclerViewItems);
+        recyclerViewCapturedPokemons = rootView.findViewById(R.id.recyclerViewCapturedPokemons);
+        buttonChangeName = rootView.findViewById(R.id.buttonChangeName);
+        buttonReleasePokemon = rootView.findViewById(R.id.buttonReleasePokemon);
 
-        Trainer trainer1 = new Trainer(1, "Ash", 1000, new ArrayList<>(), new ArrayList<>());
-        trainer1.getPokedex().add(new Pokemon(25,"Pikachu", true,"Pokeball" ));
-        trainer1.getItems().add("Pokeball");
-        trainers.add(trainer1);
+        sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
-        Trainer trainer2 = new Trainer(2, "Misty", 800, new ArrayList<>(), new ArrayList<>());
-        trainer2.getPokedex().add(new Pokemon(54, "Psyduck", true, "Masterball"));
-        trainer2.getItems().add("Masterball");
-        trainers.add(trainer2);
+        LinearLayoutManager itemsLayoutManager = new LinearLayoutManager(getContext());
+        recyclerViewItems.setLayoutManager(itemsLayoutManager);
 
-        Trainer trainer3 = new Trainer(3, "Brock", 1200, new ArrayList<>(), new ArrayList<>());
-        trainer3.getPokedex().add(new Pokemon(74,"Geodude", true, "Superball"));
-        trainer3.getItems().add("Superball");
-        trainers.add(trainer3);
+        LinearLayoutManager capturedPokemonsLayoutManager = new LinearLayoutManager(getContext());
+        recyclerViewCapturedPokemons.setLayoutManager(capturedPokemonsLayoutManager);
 
-        sharedPreferences = requireContext().getSharedPreferences("TrainerPrefs", Context.MODE_PRIVATE);
+        buttonChangeName.setOnClickListener(v -> showChangeNameDialog());
+        buttonReleasePokemon.setOnClickListener(v -> showReleasePokemonDialog());
+
+        loadAndDisplayTrainerData();
+
+        return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Trainer activeTrainer = trainerManager.getActiveTrainer();
+        saveTrainerData(activeTrainer);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadAndDisplayTrainerData();
+    }
 
 
-        if (currentTrainer != null) {
-            ArrayList<Pokemon> caughtPokemon = PokemonSharedPreferences.loadCaughtPokemon(requireContext(), currentTrainer.getId());
-            if (caughtPokemon != null) {
-                currentTrainer.setPokedex(caughtPokemon);
-            }
-        }
+    private void loadAndDisplayTrainerData() {
+        String trainerName = sharedPreferences.getString(KEY_TRAINER_NAME, "");
+        int trainerMoney = sharedPreferences.getInt(KEY_TRAINER_MONEY, 0);
+        Set<String> itemSet = sharedPreferences.getStringSet(KEY_TRAINER_ITEMS, new HashSet<>());
+        Set<String> pokemonSet = sharedPreferences.getStringSet(KEY_TRAINER_POKEDEX, new HashSet<>());
 
-        Button openDialogButton = root.findViewById(R.id.buttonOpenDialog);
-        openDialogButton.setOnClickListener(v -> showChangeNameDialog());
-
-        Button searchButton = root.findViewById(R.id.buttonSearch);
-        searchButton.setOnClickListener(v -> showSearchDialog());
-
-        Button releaseButton = root.findViewById(R.id.buttonReleasePokemon);
-        releaseButton.setOnClickListener(v -> {
-            if (currentTrainer != null) {
-                showReleasePokemonDialog();
-            }
-        });
-
-        if (sharedPreferences.contains("searched_trainer_id")) {
-            int searchedTrainerId = sharedPreferences.getInt("searched_trainer_id", -1);
-            for (Trainer trainer : trainers) {
-                if (trainer.getId() == searchedTrainerId) {
-                    currentTrainer = trainer;
-                    updateTrainerInfo(currentTrainer);
-                    break;
-                }
-            }
-        }
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
-        recyclerView.setLayoutManager(layoutManager);
-        if (currentTrainer != null && currentTrainer.getPokedex() != null) {
-            adapter = new CapturedPokemonAdapter(currentTrainer.getPokedex(), getContext(), pokemonAdapter);
-            recyclerView.setAdapter(adapter);
+        Trainer trainer = trainerManager.loadTrainerData(trainerName, trainerMoney, itemSet, pokemonSet);
+        if (trainer != null) {
+            textViewTrainerName.setText(trainer.getName());
+            textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
+            itemAdapter = new ItemAdapter(getContext());
+            itemAdapter.setItems(trainer.getItems());
+            recyclerViewItems.setAdapter(itemAdapter);
+            adapter = new CapturedPokemonAdapter(trainer.getPokedex(), getContext(), new PokemonAdapter(getContext()));
+            recyclerViewCapturedPokemons.setAdapter(adapter);
         } else {
-            Toast.makeText(requireContext(), "No captured pokemons available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Trainer data not available", Toast.LENGTH_SHORT).show();
         }
+    }
 
+    private void saveTrainerData(Trainer trainer) {
+        if (trainer != null) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(KEY_TRAINER_NAME, trainer.getName());
+            editor.putInt(KEY_TRAINER_MONEY, trainer.getMoney());
+            editor.putStringSet(KEY_TRAINER_ITEMS, new HashSet<>(trainer.getItems()));
 
-        return root;
+            Set<String> pokemonSet = new HashSet<>();
+            for (Pokemon pokemon : trainer.getPokedex()) {
+                pokemonSet.add(pokemon.toJson());
+            }
+            editor.putStringSet(KEY_TRAINER_POKEDEX, pokemonSet);
+
+            editor.apply();
+        }
     }
 
     private void showChangeNameDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Change Trainer's Name");
 
-        final EditText input = new EditText(requireContext());
+        final EditText input = new EditText(getContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
         builder.setPositiveButton("OK", (dialog, which) -> {
             String newName = input.getText().toString().trim();
-            updateTrainerName(newName);
-        });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }
-
-    private void showSearchDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Search Trainer");
-
-        final EditText input = new EditText(requireContext());
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
-
-        builder.setPositiveButton("Search", (dialog, which) -> {
-            String searchName = input.getText().toString().trim();
-            searchTrainer(searchName);
+            if (!newName.isEmpty()) {
+                textViewTrainerName.setText(newName);
+                Trainer activeTrainer = trainerManager.getActiveTrainer();
+                if (activeTrainer != null) {
+                    activeTrainer.setName(newName);
+                    saveTrainerData(activeTrainer);
+                }
+            } else {
+                Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+            }
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
@@ -156,122 +161,55 @@ public class TrainerFragment extends Fragment {
     }
 
     private void showReleasePokemonDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Select Pokemon to Release");
-
-        LinearLayout layout = new LinearLayout(requireContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        // Loop through the Pokemon list to create TextViews dynamically
-        for (Pokemon pokemon : currentTrainer.getPokedex()) {
-            TextView textView = new TextView(requireContext());
-            textView.setText(pokemon.getName());
-            textView.setPadding(16, 16, 16, 16);
-            textView.setTextSize(18);
-
-            layout.addView(textView);
-        }
-
-        builder.setView(layout);
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        final AlertDialog dialog = builder.create();
-
-        for (int i = 0; i < layout.getChildCount(); i++) {
-            View child = layout.getChildAt(i);
-            child.setOnClickListener(v -> {
-                TextView textView = (TextView) v;
-                String pokemonName = textView.getText().toString();
-
-                Pokemon selectedPokemon = null;
-                for (Pokemon pokemon : currentTrainer.getPokedex()) {
-                    if (pokemon.getName().equals(pokemonName)) {
-                        selectedPokemon = pokemon;
-                        break;
-                    }
-                }
-                if (selectedPokemon != null) {
-                    releasePokemon(selectedPokemon);
-                    dialog.dismiss();
-                }
-            });
-        }
-        dialog.show();
-    }
-
-    private void releasePokemon(Pokemon pokemon) {
-        if (currentTrainer != null && currentTrainer.getPokedex() != null) {
-            currentTrainer.getPokedex().remove(pokemon);
-            updateTrainerInfo(currentTrainer);
-            Toast.makeText(requireContext(), "You released " + pokemon.getName(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void updateTrainerName(String newName) {
-        if (currentTrainer != null) {
-            currentTrainer.setName(newName);
-            updateTrainerInfo(currentTrainer);
-
-            for (int i = 0; i < trainers.size(); i++) {
-                if (trainers.get(i).getId() == currentTrainer.getId()) {
-                    trainers.set(i, currentTrainer);
-                    break;
-                }
-            }
-        }
-    }
-
-
-    private void searchTrainer(String name) {
-        if (trainers == null || trainers.isEmpty()) {
-            Toast.makeText(requireContext(), "No trainers available", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        for (Trainer trainer : trainers) {
-            if (trainer.getName().equalsIgnoreCase(name)) {
-                currentTrainer = trainer;
-                updateTrainerInfo(currentTrainer);
-
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("searched_trainer_id", currentTrainer.getId());
-                editor.apply();
-
+        Trainer activeTrainer = trainerManager.getActiveTrainer();
+        if (activeTrainer != null) {
+            ArrayList<Pokemon> pokedex = activeTrainer.getPokedex();
+            if (pokedex.isEmpty()) {
+                Toast.makeText(getContext(), "No Pokémon to release", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Select Pokémon to Release");
+
+            String[] pokemonNames = new String[pokedex.size()];
+            for (int i = 0; i < pokedex.size(); i++) {
+                pokemonNames[i] = pokedex.get(i).getName();
+            }
+
+            builder.setItems(pokemonNames, (dialog, which) -> {
+                Pokemon releasedPokemon = pokedex.remove(which);
+                adapter.updateCapturedPokemons(pokedex);
+                saveTrainerData(activeTrainer);
+                Toast.makeText(getContext(), "Released " + releasedPokemon.getName(), Toast.LENGTH_SHORT).show();
+            });
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        } else {
+            Toast.makeText(getContext(), "Trainer data not available", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(requireContext(), "Trainer not found", Toast.LENGTH_SHORT).show();
     }
 
-    public void updateTrainerInfo(Trainer trainer) {
-        textViewTrainerName.setText(trainer.getName());
-        textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
-        textViewItems.setText(TextUtils.join(", ", trainer.getItems()));
-        PokemonSharedPreferences.saveCaughtPokemon(requireContext(), trainer.getId(), trainer.getPokedex());
-
-        if (adapter != null) {
-            adapter.updateCapturedPokemons(trainer.getPokedex());
-        }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Trainer activeTrainer = trainerManager.getActiveTrainer();
+        saveTrainerData(activeTrainer);
     }
 
+    @Override
     public void onPokemonCaught(Pokemon pokemon) {
-        addPokemonToTrainer(pokemon, currentTrainer);
-        Toast.makeText(requireContext(), "You caught " + pokemon.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    public void addPokemonToTrainer(Pokemon pokemon, Trainer trainer) {
-        if (trainer.getPokedex().contains(pokemon)) {
-            Toast.makeText(getContext(), "You already have " + pokemon.getName(), Toast.LENGTH_SHORT).show();
-            return;
+        if (pokemon != null && trainerManager != null) {
+            Trainer activeTrainer = trainerManager.getActiveTrainer();
+            if (activeTrainer != null) {
+                activeTrainer.capturePokemon(pokemon);
+                saveTrainerData(activeTrainer);
+                Toast.makeText(getContext(), pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
         }
-
-        trainer.getPokedex().add(pokemon);
-        PokemonSharedPreferences.saveCaughtPokemon(getContext(), trainer.getId(), trainer.getPokedex());
-
-        adapter.notifyDataSetChanged();
-        updateTrainerInfo(trainer);
     }
-
-
-
 }

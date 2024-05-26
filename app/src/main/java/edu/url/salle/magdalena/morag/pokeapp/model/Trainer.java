@@ -15,8 +15,7 @@ public class Trainer {
         // Default constructor required by Room
     }
 
-    public Trainer(String name, int money,
-                   ArrayList<String> items, ArrayList<Pokemon> pokedex) {
+    public Trainer(String name, int money, ArrayList<String> items, ArrayList<Pokemon> pokedex) {
         this.name = name;
         this.money = money;
         this.items = items;
@@ -41,6 +40,14 @@ public class Trainer {
 
     public void addItem(String item) {
         items.add(item);
+    }
+
+    public void addPokemon(Pokemon pokemon) {
+        pokedex.add(pokemon);
+    }
+
+    public void removePokemon(Pokemon pokemon) {
+        pokedex.remove(pokemon);
     }
 
     public String getName() {
@@ -82,8 +89,17 @@ public class Trainer {
     public void setPokedex(ArrayList<Pokemon> pokedex) {
         this.pokedex = pokedex;
     }
-    public ArrayList<Pokemon> getCapturedPokemons() {
-        return pokedex;
 
+    public boolean canAddPokemon() {
+        return pokedex.size() < 6;
     }
+
+    public void capturePokemon(Pokemon pokemon) {
+        if (pokemon != null && canAddPokemon()) {
+            this.pokedex.add(pokemon);
+        } else {
+            System.out.println("Trainer cannot capture more than 6 Pokemon.");
+        }
+    }
+
 }

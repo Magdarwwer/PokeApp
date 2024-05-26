@@ -3,6 +3,8 @@ package edu.url.salle.magdalena.morag.pokeapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -214,6 +216,15 @@ public class Pokemon implements Parcelable {
         dest.writeTypedList(statsList);
     }
 
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public static Pokemon fromJson(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, Pokemon.class);
+    }
 
 
 }

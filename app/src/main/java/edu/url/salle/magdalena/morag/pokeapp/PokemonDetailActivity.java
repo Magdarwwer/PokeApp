@@ -136,7 +136,7 @@ public class PokemonDetailActivity extends AppCompatActivity {
     private void catchPokemon() {
         if (selectedPokemon != null && currentTrainer != null) {
             if (this instanceof OnPokemonCaughtListener) {
-                trainerFragment.onPokemonCaught(selectedPokemon);
+                ((OnPokemonCaughtListener) this).onPokemonCaught(selectedPokemon);
             }
         } else {
             Toast.makeText(this, "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();

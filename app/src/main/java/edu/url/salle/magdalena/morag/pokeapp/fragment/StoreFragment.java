@@ -72,7 +72,7 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
         builder.setPositiveButton("Buy", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                buyItem(itemName, price);
+               // buyItem(itemName, price);
             }
         });
 
@@ -86,18 +86,18 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
         builder.show();
     }
 
-    private void buyItem(String itemName, int price) {
+    /*private void buyItem(String itemName, int price) {
         if (trainer != null) {
             if (trainer.getMoney() >= price) {
                 int remainingMoney = trainer.getMoney() - price;
                 trainer.setMoney(remainingMoney);
                 Toast.makeText(requireContext(), "Bought " + itemName + " for " + price + " coins.", Toast.LENGTH_SHORT).show();
-                trainerFragment.updateTrainerInfo(trainer);
+                trainerFragment.updateTrainer(trainer);
             } else {
                 Toast.makeText(requireContext(), "Not enough money to buy " + itemName + ".", Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    }*/
 
 
     public void setTrainer(Trainer trainer) {
