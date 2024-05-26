@@ -16,20 +16,23 @@ public class TrainerManager {
     private TrainerManager() {
         trainers = new ArrayList<>();
 
-        // Create and add trainer
         Trainer trainer1 = new Trainer("Ash", 1000, new ArrayList<>(), new ArrayList<>());
+        trainer1.addItem("Potion");
+        trainer1.addItem("Revive");
+        trainer1.addItem("Pokeball");
 
-        trainer1.getItems().add("Potion");
-        trainer1.getItems().add("Revive");
-        trainer1.getItems().add("Pokeball");
+        Pokemon bulbasaur = new Pokemon(1, "Bulbasaur", "First Evolution");
+        Pokemon pikachu = new Pokemon(25, "Pikachu", "First Evolution");
+        Pokemon charmander = new Pokemon(4, "Charmander", "First Evolution");
 
-        trainer1.getPokedex().add(new Pokemon(25, "Pikachu", "First Evolution"));
-        trainer1.getPokedex().add(new Pokemon(4, "Charmander", "First Evolution"));
-        trainer1.getPokedex().add(new Pokemon(1, "Bulbasaur", "First Evolution"));
+        trainer1.getPokedex().add(bulbasaur);
+        trainer1.getPokedex().add(pikachu);
+        trainer1.getPokedex().add(charmander);
 
-        trainer1.capturePokemon(trainer1.getPokedex().get(0), new Pokeball("Pokeball"));
-        trainer1.capturePokemon(trainer1.getPokedex().get(1), new Pokeball("Ultraball"));
-        trainer1.capturePokemon(trainer1.getPokedex().get(2), new Pokeball("Ultraball"));
+
+        trainer1.capturePokemon(bulbasaur, new Pokeball("Pokeball"));
+        trainer1.capturePokemon(pikachu, new Pokeball("Ultraball"));
+        trainer1.capturePokemon(charmander, new Pokeball("Ultraball"));
 
         trainers.add(trainer1);
 
@@ -82,5 +85,9 @@ public class TrainerManager {
 
             editor.apply();
         }
+    }
+
+    public ArrayList<Pokemon> getPokedex() {
+        return activeTrainer.getPokedex();
     }
 }

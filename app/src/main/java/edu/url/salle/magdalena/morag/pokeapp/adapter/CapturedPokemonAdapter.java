@@ -16,23 +16,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.ArrayList;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
+import edu.url.salle.magdalena.morag.pokeapp.model.Pokeball;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 
 public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemonAdapter.CapturedPokemonViewHolder> {
 
     private ArrayList<Pokemon> capturedPokemons;
     private Context context;
-    private final PokemonAdapter pokemonAdapter;
 
-    public CapturedPokemonAdapter(ArrayList<Pokemon> capturedPokemons, Context context, PokemonAdapter pokemonAdapter) {
+    public CapturedPokemonAdapter(ArrayList<Pokemon> capturedPokemons, Context context) {
         this.capturedPokemons = capturedPokemons;
         this.context = context;
-        this.pokemonAdapter = pokemonAdapter;
-    }
-
-    public void updateCapturedPokemons(ArrayList<Pokemon> capturedPokemons) {
-        this.capturedPokemons = capturedPokemons;
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -53,6 +47,11 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         return capturedPokemons.size();
     }
 
+    public void setPokemons(ArrayList<Pokemon> pokemons) {
+        this.capturedPokemons = pokemons;
+        notifyDataSetChanged();
+    }
+
     public class CapturedPokemonViewHolder extends RecyclerView.ViewHolder {
 
         private TextView pokemonNameTextView;
@@ -69,10 +68,17 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         public void bind(Pokemon pokemon) {
             if (pokemon != null) {
                 pokemonNameTextView.setText(pokemon.getName());
-                pokeballImageView.setImageResource(getPokeballImageResId(pokemon.getPokeball().getType()));
+
+                Pokeball pokeball = pokemon.getPokeball();
+                if (pokeball != null) {
+                    String pokeballType = pokeball.getType();
+                    pokeballImageView.setImageResource(getPokeballImageResId(pokeballType));
+                } else {
+                    pokeballImageView.setImageResource(R.mipmap.gamepoke);
+                }
 
                 Glide.with(itemView.getContext())
-                        .load(pokemonAdapter.getPokemonFrontImageUrl(pokemon.getId()))
+                        .load(getPokemonFrontImageUrl(pokemon.getId()))
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(pokemonImageView);
@@ -92,6 +98,10 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
                 default:
                     return R.mipmap.gamepoke;
             }
+        }
+
+        private String getPokemonFrontImageUrl(int pokemonId) {
+            return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + pokemonId + ".png";
         }
     }
 }

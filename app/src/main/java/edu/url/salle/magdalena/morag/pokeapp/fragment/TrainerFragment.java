@@ -1,12 +1,10 @@
 package edu.url.salle.magdalena.morag.pokeapp.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,22 +44,27 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
     private TextView textViewTrainerName;
     private TextView textViewTrainerMoney;
     private RecyclerView recyclerViewItems;
-    private RecyclerView recyclerViewCapturedPokemons;
+    private RecyclerView recyclerView;
     private Button buttonChangeName;
     private Button buttonReleasePokemon;
     private TrainerManager trainerManager;
     private SharedPreferences sharedPreferences;
     private ItemAdapter itemAdapter;
     private CapturedPokemonAdapter adapter;
+    private ArrayList<Trainer> trainers;
     private PokemonAdapter pokemonAdapter;
 
     public static TrainerFragment getInstance() {
         return new TrainerFragment();
     }
-
-
-    public TrainerFragment() {
+    public TrainerFragment(TrainerManager currentTrainer) {
+        this.trainerManager = currentTrainer;
+        trainers = new ArrayList<>();
     }
+    public TrainerFragment() {
+        trainers = new ArrayList<>();
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,27 +80,36 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         textViewTrainerName = rootView.findViewById(R.id.textViewTrainerName);
         textViewTrainerMoney = rootView.findViewById(R.id.textViewTrainerMoney);
         recyclerViewItems = rootView.findViewById(R.id.recyclerViewItems);
-        recyclerViewCapturedPokemons = rootView.findViewById(R.id.recyclerViewCapturedPokemons);
+        recyclerView = rootView.findViewById(R.id.recyclerViewCapturedPokemons);
         buttonChangeName = rootView.findViewById(R.id.buttonChangeName);
         buttonReleasePokemon = rootView.findViewById(R.id.buttonReleasePokemon);
 
 
         itemAdapter = new ItemAdapter(getContext());
-        pokemonAdapter = new PokemonAdapter(getContext());
-        adapter = new CapturedPokemonAdapter(new ArrayList<>(), getContext(), pokemonAdapter);
+
+        adapter = new CapturedPokemonAdapter(new ArrayList<>(), getContext());
 
         LinearLayoutManager itemsLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewItems.setLayoutManager(itemsLayoutManager);
 
         LinearLayoutManager capturedPokemonsLayoutManager = new LinearLayoutManager(getContext());
-        recyclerViewCapturedPokemons.setLayoutManager(capturedPokemonsLayoutManager);
+        recyclerView.setLayoutManager(capturedPokemonsLayoutManager);
 
         buttonChangeName.setOnClickListener(v -> showChangeNameDialog());
         buttonReleasePokemon.setOnClickListener(v -> showReleasePokemonDialog());
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
+        recyclerView.setLayoutManager(layoutManager);
+        if (trainerManager != null && trainerManager.getPokedex() != null) {
+            adapter = new CapturedPokemonAdapter(trainerManager.getPokedex(), getContext());
+            recyclerView.setAdapter(adapter);
+        } else {
+            Toast.makeText(requireContext(), "No captured pokemons available", Toast.LENGTH_SHORT).show();
+        }
+
         loadAndDisplayTrainerData();
         itemAdapter.notifyDataSetChanged();
-        pokemonAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         return rootView;
     }
 
@@ -114,15 +126,12 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
             textViewTrainerMoney.setText(getString(R.string.money_format, trainer.getMoney()));
 
             itemAdapter.setItems(new ArrayList<>(trainer.getItems()));
-            pokemonAdapter.addPokemonList(new ArrayList<>(trainer.getPokedex()));
+            adapter.setPokemons(new ArrayList<>(trainer.getPokedex()));
 
-            adapter.updateCapturedPokemons(new ArrayList<>(trainer.getPokedex()));
         } else {
             Toast.makeText(getContext(), "Trainer data not available", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     @Override
     public void onPause() {
@@ -206,7 +215,7 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
 
             builder.setItems(pokemonNames, (dialog, which) -> {
                 Pokemon releasedPokemon = pokedex.remove(which);
-                adapter.updateCapturedPokemons(pokedex);
+                adapter.setPokemons(pokedex);
                 saveTrainerData(activeTrainer);
                 Toast.makeText(getContext(), "Released " + releasedPokemon.getName(), Toast.LENGTH_SHORT).show();
             });
@@ -236,7 +245,7 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
                 activeTrainer.getPokedex().add(pokemon);
                 pokemon.setCaught(true);
                 saveTrainerData(activeTrainer);
-                adapter.updateCapturedPokemons(activeTrainer.getPokedex());
+                adapter.setPokemons(activeTrainer.getPokedex());
                 Toast.makeText(getContext(), pokemon.getName() + " was caught with a " + pokeball.getType() + "!", Toast.LENGTH_SHORT).show();
             }
         } else {

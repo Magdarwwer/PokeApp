@@ -75,7 +75,6 @@ public class Pokemon implements Parcelable {
     };
 
 
-
     public String getName() {
         return name;
     }
@@ -83,6 +82,7 @@ public class Pokemon implements Parcelable {
     public int getId() {
         return id;
     }
+
     public int getType() {
         return type;
     }
@@ -229,6 +229,13 @@ public class Pokemon implements Parcelable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getPokeballType() {
+        if (pokeball != null) {
+            return pokeball.getType();
+        }
+        return null;
     }
 
     public void setPokeball(Pokeball pokeball) {

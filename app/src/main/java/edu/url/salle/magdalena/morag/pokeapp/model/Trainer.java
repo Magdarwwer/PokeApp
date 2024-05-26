@@ -36,6 +36,7 @@ public class Trainer {
         return items;
     }
 
+
     public ArrayList<Pokemon> getPokedex() {
         return pokedex;
     }

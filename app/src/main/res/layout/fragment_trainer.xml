@@ -1,120 +1,126 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:background="#000000"
+    android:padding="16dp"
     tools:ignore="ExtraText">
 
-    <!-- Trainer Info Section -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/imageViewLeftPokeball"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/gamepoke" />
-
-        <Space
-            android:layout_width="20dp"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/textViewTrainerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TRAINER"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textAllCaps="true" />
-
-        <Space
-            android:layout_width="20dp"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/imageViewRightPokeball"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/gamepoke" />
-    </LinearLayout>
-
-
-    <!-- Trainer Money Section -->
-    <TextView
-        android:id="@+id/textViewTrainerMoney"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="Money"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <!-- Items Section -->
-    <TextView
-        android:id="@+id/textViewItemsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Items:"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewItems"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <!-- Captured Pokemons Section -->
-    <TextView
-        android:id="@+id/textViewCapturedPokemonsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Captured Pokemons:"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCapturedPokemons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:id="@+id/buttonShowOrNotShow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/buttonChangeName"
-            android:layout_width="138dp"
-            android:layout_height="47dp"
-            android:layout_marginTop="72dp"
-            android:text="Update Info"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.102"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewCapturedPokemonsTitle" />
+        <!-- Trainer Info Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <Button
-            android:id="@+id/buttonReleasePokemon"
-            android:layout_width="147dp"
+            <ImageView
+                android:id="@+id/imageViewLeftPokeball"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@mipmap/gamepoke" />
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/textViewTrainerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TRAINER"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textAllCaps="true" />
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/imageViewRightPokeball"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@mipmap/gamepoke" />
+        </LinearLayout>
+
+        <!-- Trainer Money Section -->
+        <TextView
+            android:id="@+id/textViewTrainerMoney"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Release Pokemon"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_marginEnd="32dp"
+            android:text="Money"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
+        <!-- Items Section -->
+        <TextView
+            android:id="@+id/textViewItemsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Items:"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <!-- Captured Pokemons Section -->
+        <TextView
+            android:id="@+id/textViewCapturedPokemonsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Captured Pokemons:"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCapturedPokemons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:id="@+id/buttonShowOrNotShow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonChangeName"
+                android:layout_width="138dp"
+                android:layout_height="47dp"
+                android:layout_marginTop="72dp"
+                android:text="Update Info"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.102"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewCapturedPokemonsTitle" />
+
+            <Button
+                android:id="@+id/buttonReleasePokemon"
+                android:layout_width="147dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Release Pokemon"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
