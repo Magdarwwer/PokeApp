@@ -22,20 +22,21 @@
             android:src="@mipmap/gamepoke" />
 
         <Space
-            android:layout_width="10dp"
+            android:layout_width="20dp"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/textViewTrainerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trainer"
-            android:textSize="18sp"
+            android:text="TRAINER"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:gravity="center" />
+            android:gravity="center"
+            android:textAllCaps="true" />
 
         <Space
-            android:layout_width="10dp"
+            android:layout_width="20dp"
             android:layout_height="wrap_content" />
 
         <ImageView
@@ -48,23 +49,15 @@
 
     <!-- Trainer Money Section -->
     <TextView
-        android:id="@+id/textViewTrainerMoneyTitle"
+        android:id="@+id/textViewTrainerMoney"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Money: "
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="Money"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp" />
-
-    <TextView
-        android:id="@+id/textViewTrainerMoney"
-        android:layout_width="79dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="8dp"
-        android:text="0"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textStyle="bold" />
 
     <!-- Items Section -->
     <TextView
@@ -98,35 +91,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <!-- Buttons Section -->
     <LinearLayout
-        android:id="@+id/buttonLayout"
+        android:id="@+id/buttonShowOrNotShow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp"
-        android:gravity="center">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/buttonChangeName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change Name"
-            android:layout_marginEnd="8dp" />
+            android:layout_width="138dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="72dp"
+            android:text="Update Info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.102"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewCapturedPokemonsTitle" />
 
         <Button
             android:id="@+id/buttonReleasePokemon"
-            android:layout_width="wrap_content"
+            android:layout_width="147dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="Release Pokemon"
-            android:layout_marginEnd="8dp" />
-
-        <Button
-            android:id="@+id/buttonAddPokemon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add Pokemon" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </LinearLayout>
-
 </LinearLayout>

@@ -3,7 +3,9 @@ package edu.url.salle.magdalena.morag.pokeapp.fragment;
 import androidx.fragment.app.Fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import androidx.annotation.Nullable;
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.model.Store;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
+import edu.url.salle.magdalena.morag.pokeapp.model.TrainerManager;
 
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
     private int money;
     private Trainer trainer;
     private TrainerFragment trainerFragment;
+    private TrainerManager trainerManager;
 
     public void setTrainerFragment(TrainerFragment fragment) {
         this.trainerFragment = fragment;
@@ -33,12 +37,13 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_store, container, false);
 
+        trainerManager = TrainerManager.getInstance();
+
         if (trainer != null) {
             money = trainer.getMoney();
         } else {
             money = 0;
         }
-
 
         return root;
     }
@@ -64,6 +69,7 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
 
         showBuyConfirmationDialog(itemName, price);
     }
+
     private void showBuyConfirmationDialog(String itemName, int price) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Buy " + itemName + "?");
@@ -72,7 +78,8 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
         builder.setPositiveButton("Buy", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               // buyItem(itemName, price);
+                SharedPreferences.Editor editor = requireActivity().getSharedPreferences("TrainerData", Context.MODE_PRIVATE).edit();
+                buyItem(itemName, price, editor);
             }
         });
 
@@ -86,19 +93,19 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
         builder.show();
     }
 
-    /*private void buyItem(String itemName, int price) {
+    private void buyItem(String itemName, int price, SharedPreferences.Editor editor) {
         if (trainer != null) {
             if (trainer.getMoney() >= price) {
                 int remainingMoney = trainer.getMoney() - price;
                 trainer.setMoney(remainingMoney);
+                trainer.addItem(itemName);
                 Toast.makeText(requireContext(), "Bought " + itemName + " for " + price + " coins.", Toast.LENGTH_SHORT).show();
-                trainerFragment.updateTrainer(trainer);
+                trainerManager.saveTrainerData(trainer, editor);
             } else {
                 Toast.makeText(requireContext(), "Not enough money to buy " + itemName + ".", Toast.LENGTH_SHORT).show();
             }
         }
-    }*/
-
+    }
 
     public void setTrainer(Trainer trainer) {
         this.trainer = trainer;

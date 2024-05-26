@@ -1,5 +1,6 @@
 package edu.url.salle.magdalena.morag.pokeapp.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,6 +29,7 @@ import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.CapturedPokemonAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.ItemAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.PokemonAdapter;
+import edu.url.salle.magdalena.morag.pokeapp.model.Pokeball;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 import edu.url.salle.magdalena.morag.pokeapp.model.TrainerManager;
@@ -51,8 +53,21 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
     private ItemAdapter itemAdapter;
     private CapturedPokemonAdapter adapter;
 
+    public static TrainerFragment getInstance() {
+        return new TrainerFragment();
+    }
+
     public TrainerFragment() {
-        trainerManager = new TrainerManager();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        trainerManager = TrainerManager.getInstance();
+        Activity activity = getActivity();
+        if (activity != null) {
+            sharedPreferences = activity.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        }
     }
 
     @Override
@@ -67,8 +82,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         buttonChangeName = rootView.findViewById(R.id.buttonChangeName);
         buttonReleasePokemon = rootView.findViewById(R.id.buttonReleasePokemon);
 
-        sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-
         LinearLayoutManager itemsLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewItems.setLayoutManager(itemsLayoutManager);
 
@@ -79,7 +92,8 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         buttonReleasePokemon.setOnClickListener(v -> showReleasePokemonDialog());
 
         loadAndDisplayTrainerData();
-
+        itemAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         return rootView;
     }
 
@@ -132,6 +146,13 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
             editor.apply();
         }
     }
+
+    public void saveTrainerData() {
+        Trainer activeTrainer = trainerManager.getActiveTrainer();
+        saveTrainerData(activeTrainer);
+    }
+
+
 
     private void showChangeNameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -199,13 +220,17 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
     }
 
     @Override
-    public void onPokemonCaught(Pokemon pokemon, String pokeballType) {
-        if (pokemon != null && trainerManager != null) {
-            Trainer activeTrainer = trainerManager.getActiveTrainer();
+    public void onPokemonCaught(Pokemon pokemon, Pokeball pokeball) {
+        if (pokemon != null) {
+            Trainer activeTrainer = TrainerManager.getInstance().getActiveTrainer();
             if (activeTrainer != null) {
-                activeTrainer.capturePokemon(pokemon, pokeballType);
+                pokemon.setPokeball(pokeball);
+                pokemon.setCaught(true);
+                activeTrainer.getPokedex().add(pokemon);
+                pokemon.setCaught(true);
                 saveTrainerData(activeTrainer);
-                Toast.makeText(getContext(), pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
+                adapter.updateCapturedPokemons(activeTrainer.getPokedex());
+                Toast.makeText(getContext(), pokemon.getName() + " was caught with a " + pokeball.getType() + "!", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(getContext(), "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();

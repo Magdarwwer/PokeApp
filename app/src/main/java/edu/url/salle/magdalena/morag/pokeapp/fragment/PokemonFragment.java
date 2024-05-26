@@ -99,6 +99,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
                         String pokemonName = pokemonJson.getString("name");
                         int pokemonId = i + 1;
                         Pokemon pokemon = new Pokemon(pokemonId, pokemonName);
+                        pokemon.setCaught(false);
                         fetchedPokemonList.add(pokemon);
 
                         fetchPokemonDetails(pokemon, BASE_URL + "pokemon/" + pokemonName);
@@ -202,16 +203,19 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     JSONArray flavorTextEntries = response.getJSONArray("flavor_text_entries");
-                    String flavorText = "";
+                    StringBuilder flavorTextBuilder = new StringBuilder();
                     for (int i = 0; i < flavorTextEntries.length(); i++) {
                         JSONObject entry = flavorTextEntries.getJSONObject(i);
                         JSONObject language = entry.getJSONObject("language");
                         String languageName = language.getString("name");
                         if (languageName.equals("en")) {
-                            flavorText = entry.getString("flavor_text");
+                            String flavorText = entry.getString("flavor_text");
+                            flavorText = flavorText.replace("\n", " ").trim();
+                            flavorTextBuilder.append(flavorText);
                             break;
                         }
                     }
+                    String flavorText = flavorTextBuilder.toString();
                     pokemon.setDescription(flavorText);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -249,6 +253,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         intent.putExtra("typesList", pokemon.getTypesList());
         intent.putExtra("abilitiesList", pokemon.getAbilitiesList());
         intent.putExtra("statsList", pokemon.getStatsList());
+        intent.putExtra("caught", pokemon.isCaught());
 
         if (fullPokemonList != null) {
             Bundle bundle = new Bundle();

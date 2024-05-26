@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Pokemon implements Parcelable {
     private int id;
@@ -21,28 +20,28 @@ public class Pokemon implements Parcelable {
     private ArrayList<Ability> abilitiesList;
     private ArrayList<Stat> statsList;
     private boolean isCaught;
-    private String pokeballType;
+    private String evolutionStage;
+    private int type;
+    private Pokeball pokeball;
 
-    public Pokemon(int id, String name, String pokemonUrl, String front_default, String back_default, String description, int height, int weight,
-                   ArrayList<Type> typesList, ArrayList<Ability> abilitiesList, ArrayList<Stat> statsList) {
+    public Pokemon(int id, String name, String evolutionStage) {
         this.id = id;
         this.name = name;
-        this.pokemonUrl = pokemonUrl;
-        this.front_default = front_default;
-        this.back_default = back_default;
-        this.description = description;
-        this.height = height;
-        this.weight = weight;
-        this.typesList = typesList;
-        this.abilitiesList = abilitiesList;
-        this.statsList = statsList;
+        this.evolutionStage = evolutionStage;
+        this.type = Pokeball.generatePokemonType(evolutionStage);
     }
 
-    public Pokemon(int id, String name, boolean isCaught, String pokeballType) {
+    public Pokemon(int pokemonId, String pokemonName) {
+        this.id = pokemonId;
+        this.name = pokemonName;
+    }
+
+    public Pokemon(int id, String name, boolean isCaught, Pokeball pokeball) {
         this.id = id;
         this.name = name;
         this.isCaught = isCaught;
-        this.pokeballType = pokeballType;
+        this.pokeball = pokeball;
+        this.type = Pokeball.generatePokemonType("First Evolution");
     }
 
     protected Pokemon(Parcel in) {
@@ -57,6 +56,10 @@ public class Pokemon implements Parcelable {
         typesList = in.createTypedArrayList(Type.CREATOR);
         abilitiesList = in.createTypedArrayList(Ability.CREATOR);
         statsList = in.createTypedArrayList(Stat.CREATOR);
+        isCaught = in.readByte() != 0;
+        evolutionStage = in.readString();
+        type = in.readInt();
+        pokeball = new Pokeball(in.readString());
     }
 
     public static final Creator<Pokemon> CREATOR = new Creator<Pokemon>() {
@@ -71,145 +74,34 @@ public class Pokemon implements Parcelable {
         }
     };
 
-    public Pokemon(int pokemonId, String pokemonName) {
-        this.id = pokemonId;
-        this.name = pokemonName;
-    }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPokemonUrl() {
-        return pokemonUrl;
-    }
-
-    public void setPokemonUrl(String pokemonUrl) {
-        this.pokemonUrl = pokemonUrl;
+    public String getName() {
+        return name;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getFront_default() {
-        return front_default;
-    }
-
-    public String getBack_default() {
-        return back_default;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public ArrayList<Type> getTypesList() {
-        return typesList;
-    }
-
-    public ArrayList<Ability> getAbilitiesList() {
-        return abilitiesList;
-    }
-
-    public ArrayList<Stat> getStatsList() {
-        return statsList;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setFront_default(String front_default) {
-        this.front_default = front_default;
-    }
-
-    public void setBack_default(String back_default) {
-        this.back_default = back_default;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
-    public void setTypesList(ArrayList<Type> typesList) {
-        this.typesList = typesList;
-    }
-
-    public void setAbilitiesList(ArrayList<Ability> abilitiesList) {
-        this.abilitiesList = abilitiesList;
-    }
-
-    public void setStatsList(ArrayList<Stat> statsList) {
-        this.statsList = statsList;
+    public int getType() {
+        return type;
     }
 
     public boolean isCaught() {
         return isCaught;
     }
 
+    public String getEvolutionStage() {
+        return evolutionStage;
+    }
+
+    public Pokeball getPokeball() {
+        return pokeball;
+    }
+
     public void setCaught(boolean caught) {
         isCaught = caught;
-    }
-
-    public String getPokeballType() {
-        return pokeballType;
-    }
-
-    public void setPokeballType(String pokeballType) {
-        this.pokeballType = pokeballType;
-    }
-
-    public int getType() {
-        Random random = new Random();
-        switch (random.nextInt(4)) {
-            case 0:
-                return random.nextInt(61) + 20;
-            case 1:
-                return random.nextInt(121) + 80;
-            case 2:
-                return random.nextInt(151) + 200;
-            case 3:
-                return random.nextInt(151) + 350;
-            default:
-                return 0;
-        }
-    }
-
-    public double getCaptureProbability(String pokeballType) {
-        double baseProbability = (600.0 - getType()) / 600.0;
-        switch (pokeballType) {
-            case "Pokeball":
-                return baseProbability * 1.0;
-            case "Superball":
-                return baseProbability * 1.5;
-            case "Ultraball":
-                return baseProbability * 2.0;
-            case "Masterball":
-                return 1.0; // 100% capture probability
-            default:
-                return 0.0;
-        }
     }
 
     @Override
@@ -230,7 +122,16 @@ public class Pokemon implements Parcelable {
         dest.writeTypedList(typesList);
         dest.writeTypedList(abilitiesList);
         dest.writeTypedList(statsList);
+        dest.writeByte((byte) (isCaught ? 1 : 0));
+        dest.writeString(evolutionStage);
+        dest.writeInt(type);
+        if (pokeball != null) {
+            dest.writeString(pokeball.getType());
+        } else {
+            dest.writeString(null);
+        }
     }
+
 
     public String toJson() {
         Gson gson = new Gson();
@@ -242,5 +143,95 @@ public class Pokemon implements Parcelable {
         return gson.fromJson(json, Pokemon.class);
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPokemonUrl() {
+        return pokemonUrl;
+    }
+
+    public void setPokemonUrl(String pokemonUrl) {
+        this.pokemonUrl = pokemonUrl;
+    }
+
+    public String getFront_default() {
+        return front_default;
+    }
+
+    public void setFront_default(String front_default) {
+        this.front_default = front_default;
+    }
+
+    public String getBack_default() {
+        return back_default;
+    }
+
+    public void setBack_default(String back_default) {
+        this.back_default = back_default;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ArrayList<Type> getTypesList() {
+        return typesList;
+    }
+
+    public void setTypesList(ArrayList<Type> typesList) {
+        this.typesList = typesList;
+    }
+
+    public ArrayList<Ability> getAbilitiesList() {
+        return abilitiesList;
+    }
+
+    public void setAbilitiesList(ArrayList<Ability> abilitiesList) {
+        this.abilitiesList = abilitiesList;
+    }
+
+    public ArrayList<Stat> getStatsList() {
+        return statsList;
+    }
+
+    public void setStatsList(ArrayList<Stat> statsList) {
+        this.statsList = statsList;
+    }
+
+    public void setEvolutionStage(String evolutionStage) {
+        this.evolutionStage = evolutionStage;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public void setPokeball(Pokeball pokeball) {
+        this.pokeball = pokeball;
+    }
 }

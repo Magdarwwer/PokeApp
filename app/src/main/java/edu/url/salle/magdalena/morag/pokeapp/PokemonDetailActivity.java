@@ -1,6 +1,5 @@
 package edu.url.salle.magdalena.morag.pokeapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -21,10 +20,10 @@ import edu.url.salle.magdalena.morag.pokeapp.adapter.AbilityAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.StatAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.TypeAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.fragment.TrainerFragment;
+import edu.url.salle.magdalena.morag.pokeapp.model.Pokeball;
 import edu.url.salle.magdalena.morag.pokeapp.model.Pokemon;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
-import edu.url.salle.magdalena.morag.pokeapp.util.PokemonSharedPreferences;
-
+import edu.url.salle.magdalena.morag.pokeapp.model.TrainerManager;
 public class PokemonDetailActivity extends AppCompatActivity {
 
     private RecyclerView abilitiesRecyclerView;
@@ -59,6 +58,13 @@ public class PokemonDetailActivity extends AppCompatActivity {
         typesRecyclerView = findViewById(R.id.recyclerViewTypes);
         descriptionTextView = findViewById(R.id.textViewDescription);
         catchPokemonButton = findViewById(R.id.buttonCatchPokemon);
+        nameTextView = findViewById(R.id.textViewNameDetail);
+        frontImageView = findViewById(R.id.imageViewFrontDetail);
+        backImageView = findViewById(R.id.imageViewBackDetail);
+        heightTextView = findViewById(R.id.textViewHeight);
+        weightTextView = findViewById(R.id.textViewWeight);
+        TextView caughtTextView = findViewById(R.id.textViewCaught);
+
 
         abilityAdapter = new AbilityAdapter();
         statAdapter = new StatAdapter();
@@ -67,16 +73,9 @@ public class PokemonDetailActivity extends AppCompatActivity {
         abilitiesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         statsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         typesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         abilitiesRecyclerView.setAdapter(abilityAdapter);
         statsRecyclerView.setAdapter(statAdapter);
         typesRecyclerView.setAdapter(typeAdapter);
-
-        nameTextView = findViewById(R.id.textViewNameDetail);
-        frontImageView = findViewById(R.id.imageViewFrontDetail);
-        backImageView = findViewById(R.id.imageViewBackDetail);
-        heightTextView = findViewById(R.id.textViewHeight);
-        weightTextView = findViewById(R.id.textViewWeight);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("pokemon") && intent.hasExtra("fullPokemonList")) {
@@ -100,7 +99,6 @@ public class PokemonDetailActivity extends AppCompatActivity {
                         weightTextView.setText("Weight: " + selectedPokemon.getWeight());
                         descriptionTextView.setText(selectedPokemon.getDescription());
 
-                        // Load Pokemon images
                         Glide.with(this)
                                 .load(selectedPokemon.getFront_default())
                                 .centerCrop()
@@ -120,36 +118,45 @@ public class PokemonDetailActivity extends AppCompatActivity {
                         abilityAdapter.notifyDataSetChanged();
                         statAdapter.notifyDataSetChanged();
                         typeAdapter.notifyDataSetChanged();
+
+                        if (selectedPokemon.isCaught()) {
+                            caughtTextView.setText("Caught: Yes");
+                        } else {
+                            caughtTextView.setText("Caught: No");
+                        }
                     }
                 }
             }
         }
 
-        catchPokemonButton.setOnClickListener(v -> onPokemonCaught(selectedPokemon,"Pokeball"));
+        catchPokemonButton.setOnClickListener(v -> {
+            Pokeball pokeball = new Pokeball("Pokeball");
+            onPokemonCaughtWithPokeball(selectedPokemon, pokeball);
+        });
     }
 
 
     public interface OnPokemonCaughtListener {
-        void onPokemonCaught(Pokemon pokemon, String pokeballType);
+        void onPokemonCaught(Pokemon pokemon, Pokeball pokeball);
     }
 
-
-    public void onPokemonCaught(Pokemon pokemon, String pokeballType) {
-        if (pokemon != null && currentTrainer != null) {
-            double captureProbability = pokemon.getCaptureProbability(pokeballType);
-            if (Math.random() < captureProbability) {
-                currentTrainer.capturePokemon(pokemon, pokeballType);
-                trainerFragment.saveTrainerData(currentTrainer);
-                Toast.makeText(this, pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Pokemon escaped from the Pokeball!", Toast.LENGTH_SHORT).show();
+    public void onPokemonCaughtWithPokeball(Pokemon pokemon, Pokeball pokeball) {
+        if (pokemon != null) {
+            Trainer activeTrainer = TrainerManager.getInstance().getActiveTrainer();
+            if (activeTrainer != null) {
+                double captureProbability = pokeball.getCaptureProbability(pokemon.getType());
+                if (Math.random() < captureProbability) {
+                    activeTrainer.capturePokemon(pokemon, pokeball);
+                    trainerFragment.saveTrainerData(activeTrainer);
+                    Toast.makeText(this, pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Pokemon escaped from the Pokeball!", Toast.LENGTH_SHORT).show();
+                }
             }
         } else {
             Toast.makeText(this, "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
 
 }

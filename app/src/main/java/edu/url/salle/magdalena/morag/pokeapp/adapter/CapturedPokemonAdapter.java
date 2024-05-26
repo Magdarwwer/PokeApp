@@ -29,6 +29,7 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         this.context = context;
         this.pokemonAdapter = pokemonAdapter;
     }
+
     public void updateCapturedPokemons(ArrayList<Pokemon> capturedPokemons) {
         this.capturedPokemons = capturedPokemons;
         notifyDataSetChanged();
@@ -68,7 +69,7 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         public void bind(Pokemon pokemon) {
             if (pokemon != null) {
                 pokemonNameTextView.setText(pokemon.getName());
-                pokeballImageView.setImageResource(getPokeballImageResId(pokemon.getPokeballType()));
+                pokeballImageView.setImageResource(getPokeballImageResId(pokemon.getPokeball().getType()));
 
                 Glide.with(itemView.getContext())
                         .load(pokemonAdapter.getPokemonFrontImageUrl(pokemon.getId()))
