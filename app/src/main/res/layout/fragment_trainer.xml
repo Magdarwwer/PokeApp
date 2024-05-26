@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#000000"
+    >
 
 
     <!-- Trainer Info Section -->
@@ -14,6 +16,8 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="60dp"
         android:text="Trainer's Name: "
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -30,7 +34,10 @@
         android:id="@+id/textViewTrainerMoney"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="32dp"
         android:text="Money"
         android:textSize="18sp"
@@ -43,6 +50,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="Items:"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -58,6 +67,8 @@
         android:id="@+id/textViewCapturedPokemonsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:text="Captured Pokemons:"
         android:textSize="18sp"
         android:textStyle="bold" />
