@@ -5,14 +5,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <!-- Trainer Info Section -->
     <TextView
         android:id="@+id/textViewTrainerNameInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Trainer's Name:"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="60dp"
+        android:text="Trainer's Name: "
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -20,21 +23,24 @@
         android:id="@+id/textViewTrainerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="156dp"
+        android:layout_marginTop="60dp"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textViewTrainerMoney"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="Money"
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <!-- Items Section -->
     <TextView
         android:id="@+id/textViewItemsTitle"
         android:layout_width="wrap_content"
@@ -42,6 +48,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Items:"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -56,6 +64,8 @@
         android:id="@+id/textViewCapturedPokemonsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Captured Pokemons:"
