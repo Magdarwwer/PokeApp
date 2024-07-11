@@ -76,6 +76,10 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
     }
 
     private void searchPokemon(String searchText) {
+        if (fullPokemonList == null) {
+            return; // If fullPokemonList is null, do nothing
+        }
+
         ArrayList<Pokemon> filteredPokemonList = new ArrayList<>();
         for (Pokemon pokemon : fullPokemonList) {
             if (pokemon.getName().toLowerCase().contains(searchText.toLowerCase())) {
@@ -84,6 +88,7 @@ public class PokemonFragment extends Fragment implements PokemonAdapter.OnPokemo
         }
         adapter.filterList(filteredPokemonList);
     }
+
 
     public void fetchData() {
         AsyncHttpClient client = new AsyncHttpClient();

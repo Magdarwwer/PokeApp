@@ -15,11 +15,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
+import edu.url.salle.magdalena.morag.pokeapp.adapter.ItemAdapter;
 import edu.url.salle.magdalena.morag.pokeapp.model.Store;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 import edu.url.salle.magdalena.morag.pokeapp.model.TrainerManager;
 
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class StoreFragment extends Fragment implements View.OnClickListener {
 
@@ -27,6 +30,7 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
     private Trainer trainer;
     private TrainerFragment trainerFragment;
     private TrainerManager trainerManager;
+    private ItemAdapter itemAdapter;
 
     public void setTrainerFragment(TrainerFragment fragment) {
         this.trainerFragment = fragment;
@@ -38,6 +42,7 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
         View root = inflater.inflate(R.layout.fragment_store, container, false);
 
         trainerManager = TrainerManager.getInstance();
+        itemAdapter = new ItemAdapter(getContext());
 
         if (trainer != null) {
             money = trainer.getMoney();
@@ -101,12 +106,12 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
                 trainer.addItem(itemName);
                 Toast.makeText(requireContext(), "Bought " + itemName + " for " + price + " coins.", Toast.LENGTH_SHORT).show();
                 trainerManager.saveTrainerData(trainer, editor);
+                itemAdapter.setItems(new ArrayList<>(trainer.getItems()));
             } else {
                 Toast.makeText(requireContext(), "Not enough money to buy " + itemName + ".", Toast.LENGTH_SHORT).show();
             }
         }
     }
-
     public void setTrainer(Trainer trainer) {
         this.trainer = trainer;
     }

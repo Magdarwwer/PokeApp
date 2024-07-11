@@ -71,6 +71,7 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         super.onCreate(savedInstanceState);
         trainerManager = TrainerManager.getInstance();
         sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
     }
 
     @Override
@@ -84,8 +85,8 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         buttonChangeName = rootView.findViewById(R.id.buttonChangeName);
         buttonReleasePokemon = rootView.findViewById(R.id.buttonReleasePokemon);
 
-
         itemAdapter = new ItemAdapter(getContext());
+        recyclerViewItems.setAdapter(itemAdapter);
 
         adapter = new CapturedPokemonAdapter(new ArrayList<>(), getContext());
 
@@ -147,22 +148,27 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
     }
 
 
-    public void saveTrainerData(Trainer trainer) {
-        if (trainer != null) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(KEY_TRAINER_NAME, trainer.getName());
-            editor.putInt(KEY_TRAINER_MONEY, trainer.getMoney());
-            editor.putStringSet(KEY_TRAINER_ITEMS, new HashSet<>(trainer.getItems()));
-
-            Set<String> pokemonSet = new HashSet<>();
-            for (Pokemon pokemon : trainer.getPokedex()) {
-                pokemonSet.add(pokemon.toJson());
-            }
-            editor.putStringSet(KEY_TRAINER_POKEDEX, pokemonSet);
-
-            editor.apply();
+    public void saveTrainerData(Trainer activeTrainer) {
+        if (activeTrainer == null) {
+            return;
         }
+
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString(KEY_TRAINER_NAME, activeTrainer.getName());
+        editor.putInt(KEY_TRAINER_MONEY, activeTrainer.getMoney());
+        editor.putStringSet(KEY_TRAINER_ITEMS, new HashSet<>(activeTrainer.getItems()));
+
+        Set<String> pokemonSet = new HashSet<>();
+        for (Pokemon pokemon : activeTrainer.getPokedex()) {
+            pokemonSet.add(pokemon.toJson());
+        }
+        editor.putStringSet(KEY_TRAINER_POKEDEX, pokemonSet);
+
+        editor.apply();
     }
+
 
     public void saveTrainerData() {
         Trainer activeTrainer = trainerManager.getActiveTrainer();
@@ -250,6 +256,22 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
             }
         } else {
             Toast.makeText(getContext(), "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void updateCapturedPokemon(Pokemon newPokemon) {
+        if (adapter != null) {
+            adapter.addPokemon(newPokemon);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void addNewItem(String newItem) {
+        Trainer activeTrainer = trainerManager.getActiveTrainer();
+        if (activeTrainer != null) {
+            activeTrainer.getItems().add(newItem);
+            saveTrainerData(activeTrainer);
+            itemAdapter.setItems(new ArrayList<>(activeTrainer.getItems()));
         }
     }
 

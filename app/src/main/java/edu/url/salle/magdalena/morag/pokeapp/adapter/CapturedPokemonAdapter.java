@@ -52,6 +52,11 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         notifyDataSetChanged();
     }
 
+    public void addPokemon(Pokemon newPokemon) {
+        capturedPokemons.add(newPokemon);
+        notifyItemInserted(capturedPokemons.size() - 1);
+    }
+
     public class CapturedPokemonViewHolder extends RecyclerView.ViewHolder {
 
         private TextView pokemonNameTextView;

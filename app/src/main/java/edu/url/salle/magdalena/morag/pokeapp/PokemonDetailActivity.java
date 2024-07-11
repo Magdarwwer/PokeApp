@@ -142,6 +142,33 @@ public class PokemonDetailActivity extends AppCompatActivity {
         void onPokemonCaught(Pokemon pokemon, Pokeball pokeball);
     }
 
+    /*public void onPokemonCaughtWithPokeball(Pokemon pokemon, Pokeball pokeball) {
+        if (pokemon != null) {
+            Trainer activeTrainer = TrainerManager.getInstance().getActiveTrainer();
+            if (activeTrainer != null) {
+                double captureProbability = pokeball.getCaptureProbability(pokemon.getType());
+                if (Math.random() < captureProbability) {
+                    activeTrainer.capturePokemon(pokemon, pokeball);
+                    pokemon.setCaught(true);
+                    TrainerFragment trainerFragment = new TrainerFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentPokemonDetailLayout, trainerFragment)
+                            .commit();
+                    if (trainerFragment.isAdded() && trainerFragment.getContext() != null) {
+                        trainerFragment.saveTrainerData(activeTrainer);
+                        Toast.makeText(this, pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to save trainer data. Fragment not attached.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Pokemon escaped from the Pokeball!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            Toast.makeText(this, "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
+        }
+    }*/
+
     public void onPokemonCaughtWithPokeball(Pokemon pokemon, Pokeball pokeball) {
         if (pokemon != null) {
             Trainer activeTrainer = TrainerManager.getInstance().getActiveTrainer();
@@ -150,7 +177,9 @@ public class PokemonDetailActivity extends AppCompatActivity {
                 if (Math.random() < captureProbability) {
                     activeTrainer.capturePokemon(pokemon, pokeball);
                     pokemon.setCaught(true);
-                    trainerFragment.saveTrainerData(activeTrainer);
+
+                    updateTrainerFragment(activeTrainer, pokemon);
+
                     Toast.makeText(this, pokemon.getName() + " was caught!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Pokemon escaped from the Pokeball!", Toast.LENGTH_SHORT).show();
@@ -160,6 +189,24 @@ public class PokemonDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to catch Pokémon", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void updateTrainerFragment(Trainer activeTrainer, Pokemon caughtPokemon) {
+        TrainerFragment trainerFragment = new TrainerFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentPokemonDetailLayout, trainerFragment)
+                .commit();
+
+        if (trainerFragment.isAdded() && trainerFragment.getContext() != null) {
+            trainerFragment.updateCapturedPokemon(caughtPokemon);
+
+            trainerFragment.saveTrainerData(activeTrainer);
+
+            Toast.makeText(this, caughtPokemon.getName() + " was added to your Pokédex!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Failed to save trainer data. Fragment not attached.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
 

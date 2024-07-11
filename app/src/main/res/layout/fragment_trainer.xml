@@ -1,16 +1,15 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentTrainerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:padding="16dp"
-    tools:ignore="ExtraText">
+    android:background="#000000">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <!-- Trainer Info Section -->
         <LinearLayout
@@ -106,21 +105,15 @@
                 android:id="@+id/buttonChangeName"
                 android:layout_width="138dp"
                 android:layout_height="47dp"
-                android:layout_marginTop="72dp"
-                android:text="Update Info"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.102"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewCapturedPokemonsTitle" />
+                android:layout_marginTop="16dp"
+                android:text="Update Info" />
 
             <Button
                 android:id="@+id/buttonReleasePokemon"
                 android:layout_width="147dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Release Pokemon"
-                app:layout_constraintStart_toStartOf="parent" />
-
+                android:text="Release Pokemon" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
