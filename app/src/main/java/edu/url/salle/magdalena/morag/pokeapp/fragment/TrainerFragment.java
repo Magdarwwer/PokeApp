@@ -89,6 +89,7 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         recyclerViewItems.setAdapter(itemAdapter);
 
         adapter = new CapturedPokemonAdapter(new ArrayList<>(), getContext());
+        recyclerView.setAdapter(adapter);
 
         LinearLayoutManager itemsLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewItems.setLayoutManager(itemsLayoutManager);
@@ -111,6 +112,15 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         loadAndDisplayTrainerData();
         itemAdapter.notifyDataSetChanged();
         adapter.notifyDataSetChanged();
+
+
+        adapter = new CapturedPokemonAdapter(new ArrayList<>(), getContext());
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnPokemonClickListener(pokemon -> {
+            Toast.makeText(getContext(), "Clicked on: " + pokemon.getName(), Toast.LENGTH_SHORT).show();
+        });
+
         return rootView;
     }
 
@@ -274,5 +284,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
             itemAdapter.setItems(new ArrayList<>(activeTrainer.getItems()));
         }
     }
+
 
 }

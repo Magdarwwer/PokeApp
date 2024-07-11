@@ -23,6 +23,15 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
 
     private ArrayList<Pokemon> capturedPokemons;
     private Context context;
+    private OnPokemonClickListener onPokemonClickListener;
+
+    public interface OnPokemonClickListener {
+        void onPokemonClick(Pokemon pokemon);
+    }
+
+    public void setOnPokemonClickListener(OnPokemonClickListener listener) {
+        this.onPokemonClickListener = listener;
+    }
 
     public CapturedPokemonAdapter(ArrayList<Pokemon> capturedPokemons, Context context) {
         this.capturedPokemons = capturedPokemons;
@@ -40,6 +49,13 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
     public void onBindViewHolder(@NonNull CapturedPokemonViewHolder holder, int position) {
         Pokemon pokemon = capturedPokemons.get(position);
         holder.bind(pokemon);
+
+        // Set click listener
+        holder.itemView.setOnClickListener(v -> {
+            if (onPokemonClickListener != null) {
+                onPokemonClickListener.onPokemonClick(pokemon);
+            }
+        });
     }
 
     @Override
