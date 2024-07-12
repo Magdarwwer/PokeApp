@@ -10,9 +10,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import java.util.ArrayList;
 
 import edu.url.salle.magdalena.morag.pokeapp.R;
 import edu.url.salle.magdalena.morag.pokeapp.adapter.ItemAdapter;
@@ -20,29 +21,34 @@ import edu.url.salle.magdalena.morag.pokeapp.model.Store;
 import edu.url.salle.magdalena.morag.pokeapp.model.Trainer;
 import edu.url.salle.magdalena.morag.pokeapp.model.TrainerManager;
 
-import android.widget.Toast;
-
-import java.util.ArrayList;
-
 public class StoreFragment extends Fragment implements View.OnClickListener {
 
     private int money;
     private Trainer trainer;
-    private TrainerFragment trainerFragment;
     private TrainerManager trainerManager;
     private ItemAdapter itemAdapter;
 
-    public void setTrainerFragment(TrainerFragment fragment) {
-        this.trainerFragment = fragment;
+    public void setTrainer(Trainer trainer) {
+        this.trainer = trainer;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_store, container, false);
 
         trainerManager = TrainerManager.getInstance();
         itemAdapter = new ItemAdapter(getContext());
+
+        Button buttonBuyPokeball = root.findViewById(R.id.buttonBuyPokeball);
+        Button buttonBuySuperball = root.findViewById(R.id.buttonBuySuperball);
+        Button buttonBuyUltraball = root.findViewById(R.id.buttonBuyUltraball);
+        Button buttonBuyMasterball = root.findViewById(R.id.buttonBuyMasterball);
+
+        buttonBuyPokeball.setOnClickListener(this);
+        buttonBuySuperball.setOnClickListener(this);
+        buttonBuyUltraball.setOnClickListener(this);
+        buttonBuyMasterball.setOnClickListener(this);
 
         if (trainer != null) {
             money = trainer.getMoney();
@@ -83,7 +89,8 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
         builder.setPositiveButton("Buy", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SharedPreferences.Editor editor = requireActivity().getSharedPreferences("TrainerData", Context.MODE_PRIVATE).edit();
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TrainerData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
                 buyItem(itemName, price, editor);
             }
         });
@@ -104,15 +111,14 @@ public class StoreFragment extends Fragment implements View.OnClickListener {
                 int remainingMoney = trainer.getMoney() - price;
                 trainer.setMoney(remainingMoney);
                 trainer.addItem(itemName);
-                Toast.makeText(requireContext(), "Bought " + itemName + " for " + price + " coins.", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(requireContext(), "You have bought a " + itemName + " for " + price + " coins.", Toast.LENGTH_SHORT).show();
+
                 trainerManager.saveTrainerData(trainer, editor);
                 itemAdapter.setItems(new ArrayList<>(trainer.getItems()));
             } else {
                 Toast.makeText(requireContext(), "Not enough money to buy " + itemName + ".", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-    public void setTrainer(Trainer trainer) {
-        this.trainer = trainer;
     }
 }

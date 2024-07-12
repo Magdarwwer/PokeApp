@@ -52,7 +52,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
     private ItemAdapter itemAdapter;
     private CapturedPokemonAdapter adapter;
     private ArrayList<Trainer> trainers;
-    private PokemonAdapter pokemonAdapter;
 
     public static TrainerFragment getInstance() {
         return new TrainerFragment();
@@ -108,11 +107,10 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         } else {
             Toast.makeText(requireContext(), "No captured pokemons available", Toast.LENGTH_SHORT).show();
         }
-
-        loadAndDisplayTrainerData();
         itemAdapter.notifyDataSetChanged();
         adapter.notifyDataSetChanged();
 
+        loadAndDisplayTrainerData();
 
         adapter = new CapturedPokemonAdapter(new ArrayList<>(), getContext());
         recyclerView.setAdapter(adapter);
@@ -177,12 +175,6 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         editor.putStringSet(KEY_TRAINER_POKEDEX, pokemonSet);
 
         editor.apply();
-    }
-
-
-    public void saveTrainerData() {
-        Trainer activeTrainer = trainerManager.getActiveTrainer();
-        saveTrainerData(activeTrainer);
     }
 
 
@@ -276,14 +268,24 @@ public class TrainerFragment extends Fragment implements PokemonDetailActivity.O
         }
     }
 
+    public void updateItemsList() {
+        Trainer activeTrainer = trainerManager.getActiveTrainer();
+        if (activeTrainer != null) {
+            itemAdapter.setItems(new ArrayList<>(activeTrainer.getItems()));
+            itemAdapter.notifyDataSetChanged();
+        }
+    }
+
+
     private void addNewItem(String newItem) {
         Trainer activeTrainer = trainerManager.getActiveTrainer();
         if (activeTrainer != null) {
             activeTrainer.getItems().add(newItem);
             saveTrainerData(activeTrainer);
-            itemAdapter.setItems(new ArrayList<>(activeTrainer.getItems()));
+            updateItemsList();
         }
     }
+
 
 
 }
